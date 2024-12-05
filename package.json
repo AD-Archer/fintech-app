@@ -2,15 +2,25 @@
   "name": "fintech-app",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon  backend/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "http": "^0.0.1-security"
+    "connection": "^1.5.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "http": "^0.0.1-security",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.11.5",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
