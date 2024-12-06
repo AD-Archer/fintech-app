@@ -2,7 +2,6 @@
 import express from 'express';
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-import { validateTask } from './modules/validateTask.js';
 import setupRoutes from './modules/SetRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,7 +23,6 @@ connect(); // This will establish the MySQL connection
 
 // Middleware
 app.use(express.json()); // Parse JSON payloads
-app.use(validateTask); // Task validation middleware
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
