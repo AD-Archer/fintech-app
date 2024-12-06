@@ -1,4 +1,6 @@
-import { connection } from './server.js'; // Import the connection from server.js
+// SetRoutes.js
+import { connection } from '../db.js'; // Import the connection from db.js
+
 import express from 'express'; // Import express to use its features
 
 const setupRoutes = (app) => {
@@ -21,5 +23,9 @@ const setupRoutes = (app) => {
         });
     });
 };
+
+
+
+
 
 export default setupRoutes; // Export the setupRoutes function
