@@ -33,8 +33,8 @@ The Fintech App is a web application designed to manage tasks and user accounts.
 
 2. Install the dependencies:
    ```bash
-   npm install
-   ```
+   npm run install-all
+      ```
 
 3. Create a `.env` file in the root directory and add your database configuration:
    ```plaintext
