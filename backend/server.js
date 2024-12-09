@@ -2,7 +2,7 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import 'dotenv/config'; // Automatically loads .env file
-import setupRoutes from './modules/SetRoutes.js';
+import setupRoutes from './models/SetRoutes.js';
 import { connect } from './db.js'; // Import the connect function from db.js
 
 // Resolve __dirname for ES modules

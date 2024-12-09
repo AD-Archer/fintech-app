@@ -1,4 +1,4 @@
-// userController.js
+// This file is used to create users.
 import { connection } from '../db.js';
 
 const createUser = (username, email, password) => {

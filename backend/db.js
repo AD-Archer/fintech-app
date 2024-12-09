@@ -2,7 +2,7 @@ import mysql from 'mysql2';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { config } from 'dotenv';
-import { createDatabase } from './modules/TableCreation.js'; // Import the function from TableCreation.js
+import { createDatabase } from './models/DatabaseCreation.js'; // Import the function from DatabaseCreation.js
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
