@@ -1,0 +1,1 @@
+Warning, ensure that your .env file for database is inside of the root of your backend directory.
