@@ -36,7 +36,7 @@ The Fintech App is a web application designed to manage tasks and user accounts.
    npm run install-all
       ```
 
-3. Create a `.env` file in the root directory and add your database configuration:
+3. Create a `.env` file in the root directory of the backend folder and add your database configuration:
    ```plaintext
    DB_HOST=localhost
    DB_USER=your_mysql_username
@@ -66,12 +66,12 @@ fintech-app/
 │   ├── server.js            # Main server file
 │   ├── modules/             # Contains user and task related modules
 │   │   ├── validateTask.js  # User creation logic
-│   │   ├── SetRoutes.js     # API route setup
-│       └── ETC              # The rest of the modules we use will be placed here
-│
-├── .env                     # Environment variables
-├── package.json             # Project metadata and dependencies
-└── README.md                # Project documentation
+    │   ├── SetRoutes.js     # API route setup
+    |--- .env
+    └── ETC              # The rest of the modules we use will be placed here
+
+ 
+ # Project documentation
 ```
 
 ## Contributing
