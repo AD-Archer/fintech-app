@@ -1,19 +1,26 @@
 import mysql from 'mysql2';
-import 'dotenv/config';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { config } from 'dotenv';
 import { createDatabase } from './modules/TableCreation.js'; // Import the function from TableCreation.js
 
+// Resolve __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Explicitly set the path to the .env file in the root directory
+config({ path: path.resolve(__dirname, '../.env') }); // Adjust if .env is not in the root directory
 
 // Set up MySQL connection
 const connection = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT || 3306
+    port: process.env.DB_PORT || 3306,
 });
 
 // Function to connect to the database
 export function connect() {
-    // First, connect to MySQL without specifying the database
     connection.connect((err) => {
         if (err) {
             console.error('Error connecting to the MySQL server:', err);
@@ -29,4 +36,3 @@ export function connect() {
 
 // Export the connection for use in other parts of the app
 export { connection };
-

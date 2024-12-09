@@ -66,12 +66,12 @@ fintech-app/
 │   ├── server.js            # Main server file
 │   ├── modules/             # Contains user and task related modules
 │   │   ├── validateTask.js  # User creation logic
-    │   ├── SetRoutes.js     # API route setup
-    |--- .env
-    └── ETC              # The rest of the modules we use will be placed here
-
- 
- # Project documentation
+│   │   ├── SetRoutes.js     # API route setup
+│       └── ETC              # The rest of the modules we use will be placed here
+│
+├── .env                     # Environment variables
+├── package.json             # Project metadata and dependencies
+└── README.md                # Project documentation
 ```
 
 ## Contributing
