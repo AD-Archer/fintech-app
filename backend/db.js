@@ -1,9 +1,7 @@
 import mysql from 'mysql2';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { createDatabase } from './modules/TableCreation.js'; // Import the function from TableCreation.js
 
-// Load environment variables
-dotenv.config();
 
 // Set up MySQL connection
 const connection = mysql.createConnection({

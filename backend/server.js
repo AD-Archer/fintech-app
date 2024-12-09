@@ -1,7 +1,6 @@
 // server.js
 import express from 'express';
-import mysql from 'mysql2';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import setupRoutes from './modules/SetRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -11,8 +10,6 @@ import { connect } from './db.js'; // Import the connect function from db.js
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables
-dotenv.config();
 
 // Create Express app
 const app = express();
