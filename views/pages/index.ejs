@@ -22,6 +22,7 @@
                 <select name="type" id="type" class="form-control" required>
                     <option value="income">Income</option>
                     <option value="expense">Expense</option>
+                    <option value="withdraw">Withdraw</option>
                 </select>
             </div>
             <div class="form-group">
@@ -35,6 +36,33 @@
             <button type="submit" class="btn btn-primary">Submit</button>
             <button type="button" id="cancel-edit" class="btn btn-secondary" style="display: none;">Cancel Edit</button>
         </form>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Balance</h5>
+                        <p class="card-text" id="total-balance">$0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Income</h5>
+                        <p class="card-text" id="total-income">$0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Withdrawals</h5>
+                        <p class="card-text" id="total-withdrawals">$0.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <ul class="list-group mt-4">
             <% if (transactions.length > 0) { %>
@@ -67,18 +95,49 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // Calculate and display the current balance
+        // Get transactions data
         const transactions = <%- JSON.stringify(transactions) %>;
-        const calculateBalance = () => {
+
+        // Calculate and display all totals
+        const calculateTotals = () => {
             let balance = 0;
+            let totalIncome = 0;
+            let totalWithdrawals = 0;
+
             transactions.forEach(transaction => {
-                balance += transaction.type === 'income' ? parseFloat(transaction.amount) : -parseFloat(transaction.amount);
+                const amount = parseFloat(transaction.amount);
+                switch(transaction.type) {
+                    case 'income':
+                        balance += amount;
+                        totalIncome += amount;
+                        break;
+                    case 'expense':
+                        balance -= amount;
+                        break;
+                    case 'withdraw':
+                        balance -= amount;
+                        totalWithdrawals += amount;
+                        break;
+                }
             });
+
+            // Add console.log for debugging
+            console.log({
+                transactions,
+                balance,
+                totalIncome,
+                totalWithdrawals
+            });
+
+            // Update all total displays
             document.getElementById('current-balance').innerText = balance.toFixed(2);
+            document.getElementById('total-balance').innerText = `$${balance.toFixed(2)}`;
+            document.getElementById('total-income').innerText = `$${totalIncome.toFixed(2)}`;
+            document.getElementById('total-withdrawals').innerText = `$${totalWithdrawals.toFixed(2)}`;
         };
 
-        // Call the function to calculate balance on page load
-        calculateBalance();
+        // Call the function to calculate totals on page load
+        calculateTotals();
 
         // Edit button functionality
         document.querySelectorAll('.edit-btn').forEach(button => {
@@ -105,28 +164,37 @@
             
             const id = document.getElementById('transaction-id').value;
             const type = document.getElementById('type').value;
-            const amount = document.getElementById('amount').value;
+            const amount = parseFloat(document.getElementById('amount').value);
             const description = document.getElementById('description').value;
 
-            const url = id ? `/transactions/${id}` : '/transactions';
-            const method = id ? 'PUT' : 'POST';
+            // Validate withdrawal amount
+            if (type === 'withdraw') {
+                const currentBalance = parseFloat(document.getElementById('total-balance').innerText.replace('$', ''));
+                console.log('Withdrawal validation:', { amount, currentBalance });
+                if (amount > currentBalance) {
+                    alert('Insufficient balance for withdrawal');
+                    return;
+                }
+            }
 
             try {
-                const response = await fetch(url, {
-                    method: method,
+                const response = await fetch(id ? `/transactions/${id}` : '/transactions', {
+                    method: id ? 'PUT' : 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ type, amount, description })
                 });
 
-                if (response.ok) {
-                    window.location.href = '/'; // Redirect to home page after successful submission
-                } else {
-                    console.error('Error:', response.statusText);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Transaction failed');
                 }
+
+                window.location.href = '/';
             } catch (error) {
                 console.error('Error:', error);
+                alert(error.message || 'An error occurred while processing your request');
             }
         });
 
@@ -137,5 +205,25 @@
             this.style.display = 'none';
         });
     </script>
+
+    <style>
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-title {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .card-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        #total-balance { color: #28a745; }
+        #total-withdrawals { color: #dc3545; }
+        #total-income { color: #17a2b8; }
+    </style>
 </body>
 </html>

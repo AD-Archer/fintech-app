@@ -15,7 +15,8 @@
                         <h2 class="text-center">Login</h2>
                     </div>
                     <div class="card-body">
-                        <form id="login-form" action="/auth/login" method="POST">
+                        <div class="alert alert-danger" id="error-message" style="display: none;"></div>
+                        <form id="login-form" onsubmit="return handleLogin(event)">
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
@@ -34,5 +35,69 @@
             </div>
         </div>
     </div>
+    <script>
+    async function handleLogin(event) {
+        event.preventDefault();
+        
+        // Clear previous error messages
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.style.display = 'none';
+        
+        // Get form data
+        const formData = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        };
+        
+        // Basic validation
+        if (!formData.email || !formData.password) {
+            showError('Email and password are required');
+            return false;
+        }
+        
+        try {
+            const response = await fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                showError(data.error || 'Login failed');
+                return false;
+            }
+            
+            // Login successful - redirect to home
+            window.location.href = '/';
+        } catch (error) {
+            showError('An error occurred during login');
+            return false;
+        }
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+    </script>
+    <style>
+    .alert {
+        margin-bottom: 1rem;
+        padding: 0.75rem 1.25rem;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    </style>
 </body>
 </html> 

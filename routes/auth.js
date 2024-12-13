@@ -20,6 +20,11 @@ router.post('/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        // Validate input
+        if (!name || !email || !password) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
         // Check if user already exists
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
@@ -36,17 +41,7 @@ router.post('/register', async (req, res) => {
             password: hashedPassword
         });
 
-        // Create JWT token
-        const token = jwt.sign(
-            { userId: user.id },
-            process.env.JWT_SECRET || 'your-secret-key',
-            { expiresIn: '24h' }
-        );
-
-        // Set token in cookie
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/');
-
+        res.status(201).json({ message: 'Registration successful' });
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: 'Error registering user' });
@@ -61,13 +56,13 @@ router.post('/login', async (req, res) => {
         // Find user
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
 
         // Check password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
 
         // Create JWT token
@@ -78,9 +73,13 @@ router.post('/login', async (req, res) => {
         );
 
         // Set token in cookie
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/');
+        res.cookie('token', token, { 
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
 
+        res.json({ message: 'Login successful' });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Error logging in' });

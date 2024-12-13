@@ -10,8 +10,12 @@ export const authenticateToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
         req.userId = decoded.userId;
+        
+        console.log('Authenticated user ID:', req.userId);
+        
         next();
     } catch (error) {
+        console.error('Authentication error:', error);
         res.clearCookie('token');
         return res.redirect('/auth/login');
     }

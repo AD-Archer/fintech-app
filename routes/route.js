@@ -6,11 +6,30 @@ const router = express.Router();
 // Render index page with transactions
 router.get('/', async (req, res) => {
     try {
-        const transactions = await Transaction.findAll(); 
-        res.render('pages/index', { transactions }); 
+        console.log('User ID from request:', req.userId);
+
+        if (!req.userId) {
+            return res.redirect('/auth/login');
+        }
+
+        const transactions = await Transaction.findAll({
+            where: { userId: req.userId },
+            order: [['createdAt', 'DESC']]
+        });
+
+        console.log('Found transactions:', transactions.length);
+
+        res.render('pages/index', { 
+            transactions,
+            userId: req.userId 
+        }); 
     } catch (err) {
         console.error('Error fetching transactions:', err); 
-        res.status(500).json({ error: 'Error fetching transactions' });
+        res.status(500).json({ 
+            error: 'Error fetching transactions',
+            details: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        });
     }
 });
 
@@ -18,8 +37,40 @@ router.get('/', async (req, res) => {
 router.post('/transactions', async (req, res) => {
     try {
         const { type, amount, description } = req.body;
-        await Transaction.create({ type, amount, description }); 
-        res.redirect('/'); 
+        const userId = req.userId; // From auth middleware
+
+        // Get current balance
+        const transactions = await Transaction.findAll({
+            where: { userId },
+            order: [['createdAt', 'DESC']]
+        });
+
+        let currentBalance = 0;
+        transactions.forEach(t => {
+            if (t.type === 'income') {
+                currentBalance += parseFloat(t.amount);
+            } else if (t.type === 'expense' || t.type === 'withdraw') {
+                currentBalance -= parseFloat(t.amount);
+            }
+        });
+
+        // Check if withdrawal is possible
+        if (type === 'withdraw') {
+            if (parseFloat(amount) > currentBalance) {
+                return res.status(400).json({ error: 'Insufficient balance for withdrawal' });
+            }
+        }
+
+        // Create the transaction
+        const newTransaction = await Transaction.create({ 
+            type, 
+            amount: parseFloat(amount), 
+            description,
+            userId,
+            balance: type === 'income' ? currentBalance + parseFloat(amount) : currentBalance - parseFloat(amount)
+        });
+
+        res.redirect('/');
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Error creating transaction' });
