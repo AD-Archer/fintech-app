@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Finance Tracker</h1>
+        
+        <!-- Display current balance -->
+        <h3>Current Balance: $<span id="current-balance">0.00</span></h3>
+
+        <!-- Form to create or edit a transaction -->
+        <form id="transaction-form" action="/transactions" method="POST">
+            <input type="hidden" id="transaction-id" name="id" value="">
+            <div class="form-group">
+                <label for="type">Transaction Type</label>
+                <select name="type" id="type" class="form-control" required>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" name="amount" id="amount" class="form-control" placeholder="Amount" required step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" class="form-control" placeholder="Description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" id="cancel-edit" class="btn btn-secondary" style="display: none;">Cancel Edit</button>
+        </form>
+
+        <ul class="list-group mt-4">
+            <% if (transactions.length > 0) { %>
+                <% transactions.forEach(transaction => { %>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong><%= transaction.type %></strong>: $<%= transaction.amount %> - <%= transaction.description %>
+                        </div>
+                        <div>
+                            <button class="btn btn-warning btn-sm edit-btn" 
+                                    data-id="<%= transaction.id %>" 
+                                    data-type="<%= transaction.type %>" 
+                                    data-amount="<%= transaction.amount %>" 
+                                    data-description="<%= transaction.description %>">Edit</button>
+                            <form action="/transactions/<%= transaction.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                <% }); %>
+            <% } else { %>
+                <li class="list-group-item">No transactions available.</li>
+            <% } %>
+        </ul>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Calculate and display the current balance
+        const transactions = <%- JSON.stringify(transactions) %>;
+        const calculateBalance = () => {
+            let balance = 0;
+            transactions.forEach(transaction => {
+                balance += transaction.type === 'income' ? parseFloat(transaction.amount) : -parseFloat(transaction.amount);
+            });
+            document.getElementById('current-balance').innerText = balance.toFixed(2);
+        };
+
+        // Call the function to calculate balance on page load
+        calculateBalance();
+
+        // Edit button functionality
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const type = this.getAttribute('data-type');
+                const amount = this.getAttribute('data-amount');
+                const description = this.getAttribute('data-description');
+
+                // Populate the form with transaction data
+                document.getElementById('transaction-id').value = id;
+                document.getElementById('type').value = type;
+                document.getElementById('amount').value = amount;
+                document.getElementById('description').value = description;
+
+                // Show the cancel edit button
+                document.getElementById('cancel-edit').style.display = 'inline';
+            });
+        });
+
+        // Form submission handler
+        document.getElementById('transaction-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('transaction-id').value;
+            const type = document.getElementById('type').value;
+            const amount = document.getElementById('amount').value;
+            const description = document.getElementById('description').value;
+
+            const url = id ? `/transactions/${id}` : '/transactions';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ type, amount, description })
+                });
+
+                if (response.ok) {
+                    window.location.href = '/'; // Redirect to home page after successful submission
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Cancel edit functionality
+        document.getElementById('cancel-edit').addEventListener('click', function() {
+            document.getElementById('transaction-id').value = '';
+            document.getElementById('transaction-form').reset();
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
