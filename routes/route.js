@@ -8,27 +8,22 @@ router.get('/', async (req, res) => {
     try {
         console.log('User ID from request:', req.userId);
 
-        if (!req.userId) {
-            return res.redirect('/auth/login');
-        }
-
         const transactions = await Transaction.findAll({
             where: { userId: req.userId },
             order: [['createdAt', 'DESC']]
         });
 
         console.log('Found transactions:', transactions.length);
+        console.log('Transaction data:', transactions);
 
         res.render('pages/index', { 
-            transactions,
-            userId: req.userId 
+            transactions: transactions.map(t => t.toJSON())
         }); 
     } catch (err) {
         console.error('Error fetching transactions:', err); 
         res.status(500).json({ 
             error: 'Error fetching transactions',
-            details: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+            details: err.message
         });
     }
 });

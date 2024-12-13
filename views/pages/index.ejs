@@ -4,108 +4,345 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance Tracker</title>
-    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f1c40f;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding-top: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stats-card .card-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stats-card .card-text {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            word-break: break-word;
+            text-align: right;
+        }
+
+        .stats-row {
+            margin: 0 -0.5rem;
+        }
+
+        .stats-col {
+            padding: 0 0.5rem;
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+
+        .transaction-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #eee;
+            padding: 0.75rem;
+            transition: border-color 0.3s ease;
+            height: auto;
+            appearance: auto;
+            -webkit-appearance: auto;
+        }
+
+        select.form-control {
+            padding-right: 2rem;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            cursor: pointer;
+        }
+
+        select.form-control option {
+            padding: 0.5rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: none;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .transaction-list {
+            margin-top: 2rem;
+        }
+
+        .list-group-item {
+            border-radius: 10px !important;
+            margin-bottom: 0.5rem;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .list-group-item:hover {
+            transform: translateX(5px);
+            background-color: #f8f9fa;
+        }
+
+        .transaction-type {
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 1rem;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .type-income {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+
+        .type-expense {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+
+        .type-withdraw {
+            background-color: rgba(241, 196, 15, 0.2);
+            color: var(--warning-color);
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .transaction-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
+        }
+
+        .logout-btn {
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            opacity: 1;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Finance Tracker</h1>
-        
-        <!-- Display current balance -->
-        <h3>Current Balance: $<span id="current-balance">0.00</span></h3>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-wallet mr-2"></i>Finance Tracker
+            </a>
+            <a href="/auth/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+            </a>
+        </div>
+    </nav>
 
-        <!-- Form to create or edit a transaction -->
-        <form id="transaction-form" action="/transactions" method="POST">
-            <input type="hidden" id="transaction-id" name="id" value="">
-            <div class="form-group">
-                <label for="type">Transaction Type</label>
-                <select name="type" id="type" class="form-control" required>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
-                    <option value="withdraw">Withdraw</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="number" name="amount" id="amount" class="form-control" placeholder="Amount" required step="0.01">
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea name="description" id="description" class="form-control" placeholder="Description"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="button" id="cancel-edit" class="btn btn-secondary" style="display: none;">Cancel Edit</button>
-        </form>
-
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Balance</h5>
-                        <p class="card-text" id="total-balance">$0.00</p>
-                    </div>
+    <div class="container">
+        <div class="row stats-row mb-4">
+            <div class="stats-col">
+                <div class="card stats-card">
+                    <h5 class="card-title">Total Balance</h5>
+                    <p class="card-text" id="total-balance">$0.00</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Income</h5>
-                        <p class="card-text" id="total-income">$0.00</p>
-                    </div>
+            <div class="stats-col">
+                <div class="card stats-card">
+                    <h5 class="card-title">Total Income</h5>
+                    <p class="card-text" id="total-income">$0.00</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Withdrawals</h5>
-                        <p class="card-text" id="total-withdrawals">$0.00</p>
-                    </div>
+            <div class="stats-col">
+                <div class="card stats-card">
+                    <h5 class="card-title">Total Expenses</h5>
+                    <p class="card-text" id="total-expenses">$0.00</p>
+                </div>
+            </div>
+            <div class="stats-col">
+                <div class="card stats-card">
+                    <h5 class="card-title">Total Withdrawals</h5>
+                    <p class="card-text" id="total-withdrawals">$0.00</p>
                 </div>
             </div>
         </div>
 
-        <ul class="list-group mt-4">
-            <% if (transactions.length > 0) { %>
-                <% transactions.forEach(transaction => { %>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong><%= transaction.type %></strong>: $<%= transaction.amount %> - <%= transaction.description %>
+        <div class="card transaction-form">
+            <h3 class="mb-4">New Transaction</h3>
+            <form id="transaction-form" action="/transactions" method="POST">
+                <input type="hidden" id="transaction-id" name="id" value="">
+                <div class="form-group">
+                    <label for="type">Transaction Type</label>
+                    <select name="type" id="type" class="form-control" required>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                        <option value="withdraw">Withdraw</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
                         </div>
-                        <div>
-                            <button class="btn btn-warning btn-sm edit-btn" 
-                                    data-id="<%= transaction.id %>" 
-                                    data-type="<%= transaction.type %>" 
-                                    data-amount="<%= transaction.amount %>" 
-                                    data-description="<%= transaction.description %>">Edit</button>
-                            <form action="/transactions/<%= transaction.id %>?_method=DELETE" method="POST" style="display:inline;">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
+                        <input type="number" name="amount" id="amount" class="form-control" placeholder="Amount" required step="0.01">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" class="form-control" placeholder="Description" rows="2"></textarea>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle mr-2"></i>Add Transaction
+                    </button>
+                    <button type="button" id="cancel-edit" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-times mr-2"></i>Cancel Edit
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="transaction-list">
+            <h3 class="mb-4">Transaction History</h3>
+            <div class="list-group">
+                <% if (transactions.length > 0) { %>
+                    <% transactions.forEach(transaction => { %>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="transaction-type type-<%= transaction.type %>">
+                                    <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
+                                </span>
+                                <span class="transaction-amount ml-3">
+                                    $<%= transaction.amount %>
+                                </span>
+                                <div class="transaction-description mt-1">
+                                    <%= transaction.description %>
+                                </div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-warning btn-sm edit-btn" 
+                                        data-id="<%= transaction.id %>" 
+                                        data-type="<%= transaction.type %>" 
+                                        data-amount="<%= transaction.amount %>" 
+                                        data-description="<%= transaction.description %>">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form action="/transactions/<%= transaction.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </li>
-                <% }); %>
-            <% } else { %>
-                <li class="list-group-item">No transactions available.</li>
-            <% } %>
-        </ul>
+                    <% }); %>
+                <% } else { %>
+                    <div class="list-group-item text-center text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p>No transactions available.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <!-- Keep your existing scripts -->
     <script>
         // Get transactions data
         const transactions = <%- JSON.stringify(transactions) %>;
-
-        // Calculate and display all totals
-        const calculateTotals = () => {
+        
+        function calculateTotals() {
             let balance = 0;
             let totalIncome = 0;
+            let totalExpenses = 0;
             let totalWithdrawals = 0;
 
             transactions.forEach(transaction => {
                 const amount = parseFloat(transaction.amount);
+                
                 switch(transaction.type) {
                     case 'income':
                         balance += amount;
@@ -113,6 +350,7 @@
                         break;
                     case 'expense':
                         balance -= amount;
+                        totalExpenses += amount;
                         break;
                     case 'withdraw':
                         balance -= amount;
@@ -121,42 +359,24 @@
                 }
             });
 
-            // Add console.log for debugging
-            console.log({
-                transactions,
+            // Debug log
+            console.log('Calculated totals:', {
                 balance,
                 totalIncome,
-                totalWithdrawals
+                totalExpenses,
+                totalWithdrawals,
+                transactions
             });
 
-            // Update all total displays
-            document.getElementById('current-balance').innerText = balance.toFixed(2);
-            document.getElementById('total-balance').innerText = `$${balance.toFixed(2)}`;
-            document.getElementById('total-income').innerText = `$${totalIncome.toFixed(2)}`;
-            document.getElementById('total-withdrawals').innerText = `$${totalWithdrawals.toFixed(2)}`;
-        };
+            // Update the display
+            document.getElementById('total-balance').textContent = `$${balance.toFixed(2)}`;
+            document.getElementById('total-income').textContent = `$${totalIncome.toFixed(2)}`;
+            document.getElementById('total-expenses').textContent = `$${totalExpenses.toFixed(2)}`;
+            document.getElementById('total-withdrawals').textContent = `$${totalWithdrawals.toFixed(2)}`;
+        }
 
-        // Call the function to calculate totals on page load
+        // Call the function when page loads
         calculateTotals();
-
-        // Edit button functionality
-        document.querySelectorAll('.edit-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const type = this.getAttribute('data-type');
-                const amount = this.getAttribute('data-amount');
-                const description = this.getAttribute('data-description');
-
-                // Populate the form with transaction data
-                document.getElementById('transaction-id').value = id;
-                document.getElementById('type').value = type;
-                document.getElementById('amount').value = amount;
-                document.getElementById('description').value = description;
-
-                // Show the cancel edit button
-                document.getElementById('cancel-edit').style.display = 'inline';
-            });
-        });
 
         // Form submission handler
         document.getElementById('transaction-form').addEventListener('submit', async function(e) {
@@ -169,8 +389,7 @@
 
             // Validate withdrawal amount
             if (type === 'withdraw') {
-                const currentBalance = parseFloat(document.getElementById('total-balance').innerText.replace('$', ''));
-                console.log('Withdrawal validation:', { amount, currentBalance });
+                const currentBalance = parseFloat(document.getElementById('total-balance').textContent.replace('$', ''));
                 if (amount > currentBalance) {
                     alert('Insufficient balance for withdrawal');
                     return;
@@ -191,11 +410,29 @@
                     throw new Error(errorData.error || 'Transaction failed');
                 }
 
-                window.location.href = '/';
+                // Refresh the page to show new transaction
+                window.location.reload();
             } catch (error) {
                 console.error('Error:', error);
                 alert(error.message || 'An error occurred while processing your request');
             }
+        });
+
+        // Edit button functionality
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const type = this.getAttribute('data-type');
+                const amount = this.getAttribute('data-amount');
+                const description = this.getAttribute('data-description');
+
+                document.getElementById('transaction-id').value = id;
+                document.getElementById('type').value = type;
+                document.getElementById('amount').value = amount;
+                document.getElementById('description').value = description;
+
+                document.getElementById('cancel-edit').style.display = 'inline';
+            });
         });
 
         // Cancel edit functionality
@@ -205,25 +442,5 @@
             this.style.display = 'none';
         });
     </script>
-
-    <style>
-        .card {
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .card-title {
-            color: #666;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .card-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0;
-        }
-        #total-balance { color: #28a745; }
-        #total-withdrawals { color: #dc3545; }
-        #total-income { color: #17a2b8; }
-    </style>
 </body>
 </html>

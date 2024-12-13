@@ -5,40 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Finance Tracker</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent-color), #2ecc71);
+        }
+
+        .card-header {
+            background: none;
+            border: none;
+            padding: 2rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group label {
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #eee;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: none;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-footer {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .auth-footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: #2980b9;
+        }
+
+        .auth-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .input-group-text {
+            border-radius: 10px 0 0 10px;
+            border: 2px solid #eee;
+            border-right: none;
+            background: #f8f9fa;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card">
+                <div class="auth-card">
                     <div class="card-header">
-                        <h2 class="text-center">Register</h2>
+                        <i class="fas fa-user-plus auth-icon"></i>
+                        <h2>Create Account</h2>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-danger" id="error-message" style="display: none;"></div>
                         <form id="register-form" onsubmit="return handleRegister(event)">
                             <div class="form-group">
-                                <label for="name">Full Name</label>
+                                <label for="name">
+                                    <i class="fas fa-user mr-2"></i>Full Name
+                                </label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="form-group">
-                                <label for="email">Email</label>
+                                <label for="email">
+                                    <i class="fas fa-envelope mr-2"></i>Email Address
+                                </label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="form-group">
-                                <label for="password">Password</label>
+                                <label for="password">
+                                    <i class="fas fa-lock mr-2"></i>Password
+                                </label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-user-plus mr-2"></i>Register
+                            </button>
                         </form>
-                        <div class="mt-3 text-center">
-                            <p>Already have an account? <a href="/auth/login">Login here</a></p>
-                        </div>
+                    </div>
+                    <div class="auth-footer">
+                        <p class="mb-0">Already have an account? <a href="/auth/login">Login here</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
     async function handleRegister(event) {
         event.preventDefault();
