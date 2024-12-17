@@ -2,7 +2,6 @@ import { Sequelize } from 'sequelize'; // Import Sequelize
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { config } from 'dotenv';
-import { createDatabase } from '../models/DatabaseCreation.js'; // Import the function from DatabaseCreation.js
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,12 +22,8 @@ export async function connect() {
     try {
         await sequelize.authenticate(); // Authenticate the connection
         console.log('Connected to the MySQL server.');
-        
-        // Invoke the database and table creation process
-        await createDatabase(); // Call the function that starts the process of creating the database and tables
     } catch (err) {
         console.error('Unable to connect to the database:', err);
-        process.exit(1); // Exit process on server connection error
     }
 }
 

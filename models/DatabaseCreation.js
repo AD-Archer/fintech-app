@@ -2,32 +2,12 @@ import { sequelize } from '../config/db.js';
 import { DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
 
-const Transaction = sequelize.define('Transaction', {
-    type: {
-        type: DataTypes.ENUM('income', 'expense', 'withdraw'),
-        allowNull: false,
-    },
-    amount: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-    },
-    description: {
-        type: DataTypes.TEXT,
-    },
-    balance: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true,
-    },
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    }
-}, { 
-    timestamps: true,
-    tableName: 'transactions'
-});
-
 const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false
@@ -43,10 +23,44 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    balance: {
+        type: DataTypes.DECIMAL(10, 2),
+        defaultValue: 0.00 // Default balance
     }
 }, { 
     timestamps: true,
     tableName: 'users'
+});
+
+const Transaction = sequelize.define('Transaction', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    type: {
+        type: DataTypes.ENUM('income', 'expense', 'withdraw'),
+        allowNull: false,
+    },
+    amount: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+    },
+    description: {
+        type: DataTypes.TEXT,
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: User, // Reference to User model
+            key: 'id'
+        }
+    }
+}, { 
+    timestamps: true,
+    tableName: 'transactions'
 });
 
 // Define relationships
@@ -63,7 +77,7 @@ const createDatabase = async () => {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
         
-        // Create tables if they don't exist (removed force: true)
+        // Create tables if they don't exist
         await sequelize.sync();
         console.log('Database and tables synchronized');
         
@@ -74,45 +88,5 @@ const createDatabase = async () => {
     }
 };
 
-const insertSampleData = async () => {
-    try {
-        // Check if there are any users
-        const userCount = await User.count();
-        if (userCount === 0) {
-            // Create default user
-            const defaultUser = await User.create({
-                name: 'Default User',
-                email: 'default@example.com',
-                password: await bcrypt.hash('password123', 10)
-            });
-            console.log('Default user created:', defaultUser.id);
-
-            // Create sample transactions for the default user
-            await Transaction.bulkCreate([
-                { 
-                    type: 'income', 
-                    amount: 1000.00, 
-                    description: 'Initial deposit',
-                    userId: defaultUser.id 
-                },
-                { 
-                    type: 'expense', 
-                    amount: 200.00, 
-                    description: 'Groceries',
-                    userId: defaultUser.id 
-                },
-                { 
-                    type: 'income', 
-                    amount: 500.00, 
-                    description: 'Salary',
-                    userId: defaultUser.id 
-                },
-            ]);
-            console.log('Sample transactions created');
-        }
-    } catch (error) {
-        console.error('Error inserting sample data:', error);
-    }
-};
-
-export { createDatabase, Transaction, User };
+// Export the function along with User and Transaction models
+export { createDatabase, User, Transaction };

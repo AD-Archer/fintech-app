@@ -210,80 +210,89 @@
         }
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-dark">
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c3e50;">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-wallet mr-2"></i>Finance Tracker
+                <i class="fas fa-wallet me-2"></i>Finance Tracker
             </a>
-            <a href="/auth/logout" class="logout-btn">
-                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+            <a href="/auth/logout" class="btn btn-link text-white logout-btn">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
             </a>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="row stats-row mb-4">
-            <div class="stats-col">
-                <div class="card stats-card">
-                    <h5 class="card-title">Total Balance</h5>
-                    <p class="card-text" id="total-balance">$0.00</p>
+    <div class="container mt-4">
+        <div class="alert alert-danger" id="error-message" style="display: none;"></div>
+        <div class="row mb-4">
+            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                <div class="card text-white" style="background: linear-gradient(135deg, #2c3e50, #34495e);">
+                    <div class="card-body p-2">
+                        <h5 class="card-title fs-6">Total Balance</h5>
+                        <p class="card-text fs-5" id="total-balance">$0.00</p>
+                    </div>
                 </div>
             </div>
-            <div class="stats-col">
-                <div class="card stats-card">
-                    <h5 class="card-title">Total Income</h5>
-                    <p class="card-text" id="total-income">$0.00</p>
+            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                <div class="card text-white" style="background: linear-gradient(135deg, #2c3e50, #34495e);">
+                    <div class="card-body p-2">
+                        <h5 class="card-title fs-6">Total Income</h5>
+                        <p class="card-text fs-5" id="total-income">$0.00</p>
+                    </div>
                 </div>
             </div>
-            <div class="stats-col">
-                <div class="card stats-card">
-                    <h5 class="card-title">Total Expenses</h5>
-                    <p class="card-text" id="total-expenses">$0.00</p>
+            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                <div class="card text-white" style="background: linear-gradient(135deg, #2c3e50, #34495e);">
+                    <div class="card-body p-2">
+                        <h5 class="card-title fs-6">Total Expenses</h5>
+                        <p class="card-text fs-5" id="total-expenses">$0.00</p>
+                    </div>
                 </div>
             </div>
-            <div class="stats-col">
-                <div class="card stats-card">
-                    <h5 class="card-title">Total Withdrawals</h5>
-                    <p class="card-text" id="total-withdrawals">$0.00</p>
+            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                <div class="card text-white" style="background: linear-gradient(135deg, #2c3e50, #34495e);">
+                    <div class="card-body p-2">
+                        <h5 class="card-title fs-6">Total Withdrawals</h5>
+                        <p class="card-text fs-5" id="total-withdrawals">$0.00</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card transaction-form">
-            <h3 class="mb-4">New Transaction</h3>
-            <form id="transaction-form" action="/transactions" method="POST">
-                <input type="hidden" id="transaction-id" name="id" value="">
-                <div class="form-group">
-                    <label for="type">Transaction Type</label>
-                    <select name="type" id="type" class="form-control" required>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                        <option value="withdraw">Withdraw</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="number" name="amount" id="amount" class="form-control" placeholder="Amount" required step="0.01">
+        <div class="card transaction-form mb-4">
+            <div class="card-body">
+                <h3 class="mb-3">New Transaction</h3>
+                <form id="transaction-form" action="/transactions" method="POST">
+                    <input type="hidden" id="transaction-id" name="id" value="">
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Transaction Type</label>
+                        <select name="type" id="type" class="form-select" required>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                            <option value="withdraw">Withdraw</option>
+                        </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea name="description" id="description" class="form-control" placeholder="Description" rows="2"></textarea>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus-circle mr-2"></i>Add Transaction
-                    </button>
-                    <button type="button" id="cancel-edit" class="btn btn-secondary" style="display: none;">
-                        <i class="fas fa-times mr-2"></i>Cancel Edit
-                    </button>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="amount" id="amount" class="form-control" placeholder="Amount" required step="0.01">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" id="description" class="form-control" placeholder="Description" rows="2"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus-circle me-2"></i>Add Transaction
+                        </button>
+                        <button type="button" id="cancel-edit" class="btn btn-secondary btn-sm" style="display: none;">
+                            <i class="fas fa-times me-2"></i>Cancel Edit
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="transaction-list">
@@ -293,10 +302,10 @@
                     <% transactions.forEach(transaction => { %>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="transaction-type type-<%= transaction.type %>">
+                                <span class="badge bg-success transaction-type type-<%= transaction.type %>">
                                     <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
                                 </span>
-                                <span class="transaction-amount ml-3">
+                                <span class="transaction-amount ms-3">
                                     $<%= transaction.amount %>
                                 </span>
                                 <div class="transaction-description mt-1">
@@ -312,7 +321,7 @@
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <form action="/transactions/<%= transaction.id %>?_method=DELETE" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete(event)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -329,11 +338,10 @@
         </div>
     </div>
 
-    <!-- Keep your existing scripts -->
     <script>
         // Get transactions data
         const transactions = <%- JSON.stringify(transactions) %>;
-        
+
         function calculateTotals() {
             let balance = 0;
             let totalIncome = 0;
@@ -359,15 +367,6 @@
                 }
             });
 
-            // Debug log
-            console.log('Calculated totals:', {
-                balance,
-                totalIncome,
-                totalExpenses,
-                totalWithdrawals,
-                transactions
-            });
-
             // Update the display
             document.getElementById('total-balance').textContent = `$${balance.toFixed(2)}`;
             document.getElementById('total-income').textContent = `$${totalIncome.toFixed(2)}`;
@@ -391,7 +390,7 @@
             if (type === 'withdraw') {
                 const currentBalance = parseFloat(document.getElementById('total-balance').textContent.replace('$', ''));
                 if (amount > currentBalance) {
-                    alert('Insufficient balance for withdrawal');
+                    showError('Insufficient balance for withdrawal');
                     return;
                 }
             }
@@ -413,10 +412,21 @@
                 // Refresh the page to show new transaction
                 window.location.reload();
             } catch (error) {
-                console.error('Error:', error);
-                alert(error.message || 'An error occurred while processing your request');
+                showError(error.message || 'An error occurred while processing your request');
             }
         });
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Confirm delete action
+        function confirmDelete(event) {
+            return confirm('Are you sure you want to delete this transaction?');
+        }
 
         // Edit button functionality
         document.querySelectorAll('.edit-btn').forEach(button => {

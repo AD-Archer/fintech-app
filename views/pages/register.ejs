@@ -135,42 +135,42 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="auth-card">
-                    <div class="card-header">
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
                         <i class="fas fa-user-plus auth-icon"></i>
                         <h2>Create Account</h2>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-danger" id="error-message" style="display: none;"></div>
                         <form id="register-form" onsubmit="return handleRegister(event)">
-                            <div class="form-group">
-                                <label for="name">
-                                    <i class="fas fa-user mr-2"></i>Full Name
+                            <div class="mb-3">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Full Name
                                 </label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            <div class="form-group">
-                                <label for="email">
-                                    <i class="fas fa-envelope mr-2"></i>Email Address
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email Address
                                 </label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                             </div>
-                            <div class="form-group">
-                                <label for="password">
-                                    <i class="fas fa-lock mr-2"></i>Password
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password
                                 </label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fas fa-user-plus mr-2"></i>Register
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-user-plus me-2"></i>Register
                             </button>
                         </form>
                     </div>
-                    <div class="auth-footer">
+                    <div class="auth-footer text-center">
                         <p class="mb-0">Already have an account? <a href="/auth/login">Login here</a></p>
                     </div>
                 </div>

@@ -72,14 +72,14 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
-        // Set token in cookie
+        // Set token in cookie (optional)
         res.cookie('token', token, { 
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
-        res.json({ message: 'Login successful' });
+        res.json({ message: 'Login successful', token }); // Send token in response
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Error logging in' });
@@ -88,8 +88,21 @@ router.post('/login', async (req, res) => {
 
 // Handle logout
 router.get('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.redirect('/auth/login');
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ error: 'Error logging out' });
+        }
+        res.clearCookie('token');
+        res.redirect('/auth/login');
+    });
 });
 
-export default router; 
+// Route guard middleware
+const requireAuth = (req, res, next) => {
+    if (!req.session.userId) {
+        return res.redirect('/auth/login');
+    }
+    next();
+};
+
+export { router, requireAuth }; 
