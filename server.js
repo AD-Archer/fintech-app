@@ -9,6 +9,7 @@ import { router as authRoutes } from './routes/auth.js'; // Use named import
 import { connect } from './config/db.js'; // Import the connect function from db.js
 import { authenticateToken } from './middleware/auth.js';
 import session from 'express-session'; // Import express-session
+import { Transaction } from './models/DatabaseCreation.js'; // Import Transaction model
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -40,9 +41,36 @@ app.set('views', path.join(__dirname, 'views')); // Set the views directory
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Dashboard route (protected)
+app.get('/dashboard', authenticateToken, async (req, res) => {
+    try {
+        // Get user's transactions from the database
+        const transactions = await Transaction.findAll({
+            where: { userId: req.userId },
+            order: [['createdAt', 'DESC']] // Order by most recent first
+        });
+
+        // Render index page with transactions data
+        res.render('pages/index', { 
+            transactions: transactions,
+            user: req.user // If you need user data as well
+        });
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        res.status(500).render('pages/error', { 
+            error: 'Error loading dashboard' 
+        });
+    }
+});
+
+// Home route (public)
+app.get('/', (req, res) => {
+    res.render('pages/home');
+});
+
 // Routes
-app.use('/auth', authRoutes); // Use named import for auth routes
-app.use('/', authenticateToken, taskRoutes); // Protect all routes except auth routes
+app.use('/auth', authRoutes); // Auth routes
+app.use('/tasks', authenticateToken, taskRoutes); // Protected task routes
 
 // Start the server
 app.listen(port, () => {

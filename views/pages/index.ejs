@@ -295,10 +295,10 @@
             </div>
         </div>
 
-        <div class="transaction-list">
+        <div class="transaction-history">
             <h3 class="mb-4">Transaction History</h3>
             <div class="list-group">
-                <% if (transactions.length > 0) { %>
+                <% if (transactions && transactions.length > 0) { %>
                     <% transactions.forEach(transaction => { %>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
@@ -329,9 +329,8 @@
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <div class="list-group-item text-center text-muted">
-                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                        <p>No transactions available.</p>
+                    <div class="text-center py-3">
+                        <p>No transactions found.</p>
                     </div>
                 <% } %>
             </div>

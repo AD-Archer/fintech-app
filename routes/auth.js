@@ -72,14 +72,19 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
-        // Set token in cookie (optional)
+        // Set token in cookie
         res.cookie('token', token, { 
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
-        res.json({ message: 'Login successful', token }); // Send token in response
+        // Send success response with redirect to /dashboard instead of /
+        res.json({ 
+            message: 'Login successful',
+            token,
+            redirect: '/dashboard' // Change redirect URL
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Error logging in' });
