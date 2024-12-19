@@ -1,7 +1,7 @@
-import { sequelize } from '../config/db.js';
-import { DataTypes } from 'sequelize';
-import bcrypt from 'bcryptjs';
+import  sequelize  from '../config/pgdb.js';
+import  DataTypes  from 'sequelize';
 
+// Define User model
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
@@ -28,11 +28,12 @@ const User = sequelize.define('User', {
         type: DataTypes.DECIMAL(10, 2),
         defaultValue: 0.00 // Default balance
     }
-}, { 
+}, {
     timestamps: true,
     tableName: 'users'
 });
 
+// Define Transaction model
 const Transaction = sequelize.define('Transaction', {
     id: {
         type: DataTypes.INTEGER,
@@ -58,7 +59,7 @@ const Transaction = sequelize.define('Transaction', {
             key: 'id'
         }
     }
-}, { 
+}, {
     timestamps: true,
     tableName: 'transactions'
 });
@@ -72,21 +73,6 @@ Transaction.belongsTo(User, {
     foreignKey: 'userId'
 });
 
-const createDatabase = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-        
-        // Create tables if they don't exist
-        await sequelize.sync();
-        console.log('Database and tables synchronized');
-        
-        // Insert sample data only if no data exists
-        await insertSampleData();
-    } catch (error) {
-        console.error('Unable to initialize database:', error);
-    }
-};
 
-// Export the function along with User and Transaction models
-export { createDatabase, User, Transaction };
+// Export models
+export default Transaction;

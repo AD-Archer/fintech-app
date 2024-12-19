@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-export const authenticateToken = (req, res, next) => {
+
+const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
@@ -16,3 +17,5 @@ export const authenticateToken = (req, res, next) => {
         res.status(403).json({ error: 'Invalid token.' });
     }
 }; 
+
+export default authenticateToken;

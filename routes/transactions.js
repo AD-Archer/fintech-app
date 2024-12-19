@@ -1,6 +1,6 @@
 import express from 'express';
-import { Transaction } from '../models/DatabaseCreation.js';
-import { authenticateToken } from '../middleware/auth.js';
+import  Transaction  from '../models/DatabaseCreation.js';
+import  authenticateToken  from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -8,16 +8,18 @@ const router = express.Router();
 router.post('/', authenticateToken, async (req, res) => {
     try {
         const { type, amount, description } = req.body;
+        const userId = req.userId; // From auth middleware
+
         const transaction = await Transaction.create({
             type,
             amount,
             description,
-            userId: req.userId
+            userId
         });
-        req.flash('success', 'Transaction created successfully');
-        res.status(201).json({ message: 'Transaction created successfully' });
+
+        res.status(201).json({ message: 'Transaction created successfully', transaction });
     } catch (error) {
-        req.flash('error', 'Error creating transaction');
+        console.error('Error creating transaction:', error);
         res.status(500).json({ error: 'Error creating transaction' });
     }
 });
@@ -27,9 +29,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
     try {
         const { type, amount, description } = req.body;
         const transaction = await Transaction.findOne({
-            where: { 
+            where: {
                 id: req.params.id,
-                userId: req.userId 
+                userId: req.userId
             }
         });
 
@@ -49,9 +51,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
 router.delete('/:id', authenticateToken, async (req, res) => {
     try {
         const result = await Transaction.destroy({
-            where: { 
+            where: {
                 id: req.params.id,
-                userId: req.userId 
+                userId: req.userId
             }
         });
 

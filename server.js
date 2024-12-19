@@ -6,13 +6,13 @@ import path from 'path';
 import 'dotenv/config'; // Automatically loads .env file
 import taskRoutes from './routes/route.js';
 import { router as authRoutes } from './routes/auth.js'; // Use named import
-import { connect } from './config/db.js'; // Import the connect function from db.js
-import { authenticateToken } from './middleware/auth.js';
+import  connect  from './config/pgdb.js'; // Import the connection from pgdb.js
+import authenticateToken  from './middleware/auth.js';
 import session from 'express-session'; // Import express-session
-import { Transaction } from './models/DatabaseCreation.js'; // Import Transaction model
+import Transaction  from './models/DatabaseCreation.js'; // Import Transaction model
 import transactionRoutes from './routes/transactions.js';
 import flash from 'connect-flash';
-
+import http from 'http';
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,8 +21,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 2555;
 
-// Connect to the database
-connect(); // Establish the MySQL connection
+// Connect to the PostgreSQL database
 
 // Middleware
 app.use(express.json()); // Parse JSON payloads
@@ -61,14 +60,14 @@ app.get('/dashboard', authenticateToken, async (req, res) => {
         });
 
         // Render index page with transactions data
-        res.render('pages/index', { 
-            transactions: transactions,
-            user: req.user // If you need user data as well
-        });
+        res.render('pages/index') // {
+            // transactions: transactions,
+            // user: req.user // If you need user data as well
+        // });
     } catch (error) {
         console.error('Error fetching transactions:', error);
-        res.status(500).render('pages/error', { 
-            error: 'Error loading dashboard' 
+        res.status(500).render('pages/error', {
+            error: 'Error loading dashboard'
         });
     }
 });
@@ -83,7 +82,21 @@ app.use('/auth', authRoutes); // Auth routes
 app.use('/transactions', authenticateToken, transactionRoutes); // Transaction routes
 app.use('/tasks', authenticateToken, taskRoutes); // Protected task routes
 
-// Start the server
+
+// // verify connectoin to postgres
+// const requestHandler = (req, res) => {
+//     // Check if req and res are defined
+//     if (!req || !res) {
+//         console.error('Request or response is undefined');
+//         return;
+//     }
+
+//     res.writeHead(200, { "Content-Type": "text/plain" });
+//     res.end('pages/landingpage');
+// };
+
+// const server = http.createServer(requestHandler);
+
 app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server is running on port http://localhost:${port}`);
 });
