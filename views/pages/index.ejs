@@ -496,7 +496,6 @@
                 calculateTotals(); // Call calculateTotals after updating the transaction list
 
                 // Reattach event listeners to new edit buttons
-                attachEditListeners();
             })
             .catch(error => {
                 console.error('Error refreshing page:', error);
@@ -523,6 +522,7 @@
                 });
             });
         }
+        attachEditListeners();
 
         // Update form submission handler
         document.getElementById('transaction-form').addEventListener('submit', async function(e) {
