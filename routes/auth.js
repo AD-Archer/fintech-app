@@ -56,12 +56,14 @@ router.post('/login', async (req, res) => {
         // Find user
         const user = await User.findOne({ where: { email } });
         if (!user) {
+            req.flash('error', 'Invalid email or password');
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
         // Check password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
+            req.flash('error', 'Invalid email or password');
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
@@ -79,14 +81,14 @@ router.post('/login', async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
-        // Send success response with redirect to /dashboard instead of /
+        req.flash('success', 'Login successful');
         res.json({ 
             message: 'Login successful',
             token,
-            redirect: '/dashboard' // Change redirect URL
+            redirect: '/dashboard'
         });
     } catch (error) {
-        console.error('Login error:', error);
+        req.flash('error', 'Error logging in');
         res.status(500).json({ error: 'Error logging in' });
     }
 });

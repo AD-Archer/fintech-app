@@ -1,0 +1,26 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+    function showToast(message, type = 'success') {
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: {
+                background: type === 'success' 
+                    ? "linear-gradient(to right, #00b09b, #96c93d)" 
+                    : "linear-gradient(to right, #ff5f6d, #ffc371)",
+            }
+        }).showToast();
+    }
+
+    <% if (success && success.length > 0) { %>
+        showToast('<%= success %>');
+    <% } %>
+    
+    <% if (error && error.length > 0) { %>
+        showToast('<%= error %>', 'error');
+    <% } %>
+</script> 

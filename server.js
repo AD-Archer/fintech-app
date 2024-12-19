@@ -10,6 +10,8 @@ import { connect } from './config/db.js'; // Import the connect function from db
 import { authenticateToken } from './middleware/auth.js';
 import session from 'express-session'; // Import express-session
 import { Transaction } from './models/DatabaseCreation.js'; // Import Transaction model
+import transactionRoutes from './routes/transactions.js';
+import flash from 'connect-flash';
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +35,14 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === 'production' } // Set to true if using HTTPS
 }));
+app.use(flash());
+
+// Add a middleware to make flash messages available to all templates
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+});
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -65,11 +75,12 @@ app.get('/dashboard', authenticateToken, async (req, res) => {
 
 // Home route (public)
 app.get('/', (req, res) => {
-    res.render('pages/home');
+    res.render('pages/landingpage');
 });
 
 // Routes
 app.use('/auth', authRoutes); // Auth routes
+app.use('/transactions', authenticateToken, transactionRoutes); // Transaction routes
 app.use('/tasks', authenticateToken, taskRoutes); // Protected task routes
 
 // Start the server
