@@ -264,11 +264,83 @@
                 </div>
             </div>
         </div>
-        
-        <div class="card">
-            <h1 class="center">Calculator</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <h3 class="mb-3">Financial Calculator</h3>
+
+        <!-- Income Input -->
+        <div class="mb-4">
+            <label for="monthly-income" class="form-label">Monthly Income</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" id="monthly-income" class="form-control" placeholder="Enter your monthly income">
+            </div>
         </div>
 
+        <!-- Savings Goals -->
+        <div class="mb-4">
+            <h5>Savings Distribution</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="emergency-fund" class="form-label">Emergency Fund</label>
+                    <div class="input-group">
+                        <input type="number" id="emergency-fund" class="form-control" value="20">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="long-term-savings" class="form-label">Long-term Savings</label>
+                    <div class="input-group">
+                        <input type="number" id="long-term-savings" class="form-control" value="30">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="disposable-income" class="form-label">Disposable Income</label>
+                    <div class="input-group">
+                        <input type="number" id="disposable-income" class="form-control" value="50">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results mt-4" style="display: none;">
+            <h5>Monthly Breakdown</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #f39c12, #f1c40f);">
+                        <div class="card-body">
+                            <h6 class="card-title">Emergency Fund</h6>
+                            <p class="card-text" id="emergency-fund-amount">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Long-term Savings</h6>
+                            <p class="card-text" id="long-term-amount">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                        <div class="card-body">
+                            <h6 class="card-title">Safe to Spend</h6>
+                            <p class="card-text" id="disposable-amount">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+            <button class="btn btn-primary" onclick="calculateSavings()">Calculate</button>
+        </div>
+    </div>
+</div>
         <div class="card transaction-form mb-4">
             <div class="card-body">
                 <h3 class="mb-3">New Transaction</h3>
@@ -304,6 +376,8 @@
                 </form>
             </div>
         </div>
+
+        
 
         <div class="transaction-history">
             <h3 class="mb-4">Transaction History</h3>
@@ -539,6 +613,48 @@
         // Update the refresh button to reload the page
         document.getElementById('refresh-totals').addEventListener('click', function() {
             location.reload(); // Refresh the entire page
+        });
+
+        function calculateSavings() {
+            const monthlyIncome = parseFloat(document.getElementById('monthly-income').value) || 0;
+            const emergencyPercent = parseFloat(document.getElementById('emergency-fund').value) || 0;
+            const longTermPercent = parseFloat(document.getElementById('long-term-savings').value) || 0;
+            const disposablePercent = parseFloat(document.getElementById('disposable-income').value) || 0;
+
+            // Validate total percentage
+            const totalPercentage = emergencyPercent + longTermPercent + disposablePercent;
+            if (totalPercentage !== 100) {
+                showToast('Percentages must add up to 100%', 'error');
+                return;
+            }
+
+            // Calculate amounts
+            const emergencyAmount = (monthlyIncome * emergencyPercent / 100).toFixed(2);
+            const longTermAmount = (monthlyIncome * longTermPercent / 100).toFixed(2);
+            const disposableAmount = (monthlyIncome * disposablePercent / 100).toFixed(2);
+
+            // Update display
+            document.getElementById('emergency-fund-amount').textContent = `$${emergencyAmount}`;
+            document.getElementById('long-term-amount').textContent = `$${longTermAmount}`;
+            document.getElementById('disposable-amount').textContent = `$${disposableAmount}`;
+
+            // Show results
+            document.querySelector('.results').style.display = 'block';
+        }
+
+        // Add event listeners for percentage inputs to ensure they add up to 100
+        const percentageInputs = ['emergency-fund', 'long-term-savings', 'disposable-income'];
+        percentageInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                let total = 0;
+                percentageInputs.forEach(inputId => {
+                    total += parseFloat(document.getElementById(inputId).value) || 0;
+                });
+                
+                if (total > 100) {
+                    this.value = parseFloat(this.value) - (total - 100);
+                }
+            });
         });
     </script>
 </body>
