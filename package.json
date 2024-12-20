@@ -33,6 +33,7 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "pgshims": "github:neondatabase/serverless",
+    "rm": "^0.1.8",
     "sequelize": "^6.37.5",
     "vercel": "^39.2.2"
   },
