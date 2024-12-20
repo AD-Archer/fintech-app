@@ -1,6 +1,6 @@
-
-
-// demonstration file please ignore
+/*
+This script is intended to handle the user registration
+*/
 
 async function handleRegister(event) {
     event.preventDefault();
@@ -55,5 +55,4 @@ function showError(message) {
     const errorDiv = document.getElementById('error-message');
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
-} 
-
+}

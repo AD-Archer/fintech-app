@@ -1,8 +1,12 @@
+/*
+This script is intended to handle the database creation and the models for the application
+*/
+
 import sequelize from '../config/db.js';
 import { DataTypes } from 'sequelize';
 
 // Define User model
-const User = sequelize.define('User', {
+const User = sequelize.define('User', { // define the User model
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -31,11 +35,11 @@ const User = sequelize.define('User', {
     },
 }, {
     timestamps: true,
-    tableName: 'users',
+    tableName: 'users', // define the table name
 });
 
 // Define Transaction model
-const Transaction = sequelize.define('Transaction', {
+const Transaction = sequelize.define('Transaction', { // define the Transaction model
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -67,17 +71,17 @@ const Transaction = sequelize.define('Transaction', {
         allowNull: true,
     },
 }, {
-    timestamps: true,
-    tableName: 'transactions',
+    timestamps: true, 
+    tableName: 'transactions', // define the table name
 });
 
 // Define relationships
-User.hasMany(Transaction, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE',
+User.hasMany(Transaction, { // define the relationship between User and Transaction
+    foreignKey: 'user_id', // define the foreign key
+    onDelete: 'CASCADE', // delete the transaction if the user is deleted
 });
-Transaction.belongsTo(User, {
-    foreignKey: 'user_id',
+Transaction.belongsTo(User, { // define the relationship between Transaction and User
+    foreignKey: 'user_id', // define the foreign key
 });
 
 // Export models

@@ -7,7 +7,6 @@ const createUser = async (username, email, password) => {
         console.log('User created with ID:', user.id);
     } catch (err) {
         console.error('Error inserting user:', err);
-        // Handle the error gracefully, e.g., return a message or log it
     }
 };
 

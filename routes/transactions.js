@@ -3,23 +3,26 @@ import { Transaction } from '../models/DatabaseCreation.js';
 import authenticateToken from '../middleware/auth.js';
 
 const router = express.Router();
-
+/*
+This script is intended to handle the routing for the transactions
+*/
 // Create transaction
 router.post('/', authenticateToken, async (req, res) => {
     try {
         const { type, amount, description } = req.body;
-        const userId = req.userId; // This should still be userId from the auth middleware
+        const userId = req.userId; // From auth middleware
 
-        const transaction = await Transaction.create({
+        // Create the transaction
+        const newTransaction = await Transaction.create({
             type,
-            amount,
+            amount: parseFloat(amount),
             description,
-            user_id: userId // Change to match the database column name
+            user_id: userId // Ensure this matches your database schema
         });
 
-        res.status(201).json({ message: 'Transaction created successfully', transaction });
-    } catch (error) {
-        console.error('Error creating transaction:', error);
+        res.status(201).json({ message: 'Transaction created successfully', transaction: newTransaction });
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error creating transaction' });
     }
 });
@@ -27,45 +30,45 @@ router.post('/', authenticateToken, async (req, res) => {
 // Update transaction
 router.put('/:id', authenticateToken, async (req, res) => {
     try {
+        const transactionId = req.params.id;
         const { type, amount, description } = req.body;
-        const transaction = await Transaction.findOne({
-            where: {
-                id: req.params.id,
-                user_id: req.userId // Update to match the model
-            }
-        });
 
-        if (!transaction) {
-            return res.status(404).json({ error: 'Transaction not found' });
+        const [updated] = await Transaction.update(
+            { type, amount, description },
+            { where: { id: transactionId, user_id: req.userId } } // Ensure user_id is checked
+        );
+
+        if (updated) {
+            res.status(200).json({ message: 'Transaction updated successfully' });
+        } else {
+            res.status(404).json({ message: 'Transaction not found' });
         }
-
-        await transaction.update({ type, amount, description });
-        res.json(transaction);
     } catch (error) {
         console.error('Error updating transaction:', error);
-        res.status(500).json({ error: 'Error updating transaction' });
+        res.status(400).json({ message: 'Error updating transaction', error: error.message });
     }
 });
 
 // Delete transaction
 router.delete('/:id', authenticateToken, async (req, res) => {
     try {
-        const result = await Transaction.destroy({
+        const { id } = req.params;
+        const deleted = await Transaction.destroy({
             where: {
-                id: req.params.id,
-                user_id: req.userId // Update to match the model
+                id,
+                user_id: req.userId // Ensure user_id is checked
             }
         });
-
-        if (!result) {
-            return res.status(404).json({ error: 'Transaction not found' });
+        if (deleted) {
+            res.json({ message: 'Transaction deleted successfully' });
+        } else {
+            res.status(404).json({ error: 'Transaction not found' });
         }
-
-        res.json({ message: 'Transaction deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting transaction:', error);
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error deleting transaction' });
     }
 });
 
+// Export the router
 export default router; 

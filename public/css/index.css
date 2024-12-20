@@ -1,0 +1,201 @@
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f1c40f;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding-top: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stats-card .card-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stats-card .card-text {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            word-break: break-word;
+            text-align: right;
+        }
+
+        .stats-row {
+            margin: 0 -0.5rem;
+        }
+
+        .stats-col {
+            padding: 0 0.5rem;
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+
+        .transaction-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #eee;
+            padding: 0.75rem;
+            transition: border-color 0.3s ease;
+            height: auto;
+            appearance: auto;
+            -webkit-appearance: auto;
+        }
+
+        select.form-control {
+            padding-right: 2rem;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            cursor: pointer;
+        }
+
+        select.form-control option {
+            padding: 0.5rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: none;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .transaction-list {
+            margin-top: 2rem;
+        }
+
+        .list-group-item {
+            border-radius: 10px !important;
+            margin-bottom: 0.5rem;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .list-group-item:hover {
+            transform: translateX(5px);
+            background-color: #f8f9fa;
+        }
+
+        .transaction-type {
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 1rem;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .type-income {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+
+        .type-expense {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+
+        .type-withdraw {
+            background-color: rgba(241, 196, 15, 0.2);
+            color: var(--warning-color);
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .transaction-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
+        }
+
+        .logout-btn {
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            opacity: 1;
+            color: white;
+        }

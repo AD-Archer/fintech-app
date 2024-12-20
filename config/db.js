@@ -4,7 +4,7 @@ import 'dotenv/config';
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     dialectOptions: {
-        ssl: {
+        ssl: { // To protect any data transfer between a server and database
             require: true,
             rejectUnauthorized: false
         }
@@ -14,7 +14,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 // Function to connect to the database
 export async function connect() {
     try {
-        await sequelize.authenticate();
+        await sequelize.authenticate(); // wait for the database to authenticate
         await sequelize.sync(); // This will create tables if they don't exist
         console.log('Connected to PostgreSQL database');
     } catch (err) {

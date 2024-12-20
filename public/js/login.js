@@ -1,8 +1,4 @@
-
-
-// demonstration file please ignore
-
-async function handleRegister(event) {
+async function handleLogin(event) {
     event.preventDefault();
     
     // Clear previous error messages
@@ -11,24 +7,18 @@ async function handleRegister(event) {
     
     // Get form data
     const formData = {
-        name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         password: document.getElementById('password').value
     };
     
     // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
-        showError('All fields are required');
-        return false;
-    }
-    
-    if (formData.password.length < 6) {
-        showError('Password must be at least 6 characters long');
+    if (!formData.email || !formData.password) {
+        showError('Email and password are required');
         return false;
     }
     
     try {
-        const response = await fetch('/auth/register', {
+        const response = await fetch('/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,14 +29,14 @@ async function handleRegister(event) {
         const data = await response.json();
         
         if (!response.ok) {
-            showError(data.error || 'Registration failed');
+            showError(data.error || 'Login failed');
             return false;
         }
         
-        // Registration successful - redirect to login
-        window.location.href = '/auth/login';
+        // Login successful - redirect to home
+        window.location.href = '/dashboard';
     } catch (error) {
-        showError('An error occurred during registration');
+        showError('An error occurred during login');
         return false;
     }
 }
@@ -55,5 +45,4 @@ function showError(message) {
     const errorDiv = document.getElementById('error-message');
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
-} 
-
+}

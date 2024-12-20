@@ -5,18 +5,23 @@ import { User } from '../models/DatabaseCreation.js';
 
 const router = express.Router();
 
+/*
+This script is intended to handle the user authentication and registration
+*/
+
+
 // Render register page
-router.get('/register', (req, res) => {
+router.get('/register', (req, res) => { // get the register page and sends it toe auth/register
     res.render('pages/register');
 });
 
 // Render login page
-router.get('/login', (req, res) => {
+router.get('/login', (req, res) => { // get the login page and sends it to auth/login
     res.render('pages/login');
 });
 
 // Handle user registration
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res) => { // handle the user registration
     try {
         const { name, email, password } = req.body;
 
@@ -49,14 +54,14 @@ router.post('/register', async (req, res) => {
 });
 
 // Handle user login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => { // handle the user login
     try {
         const { email, password } = req.body;
 
         // Find user
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            req.flash('error', 'Invalid email or password');
+            req.flash('error', 'Invalid email or password'); // flash the error message
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
@@ -68,20 +73,20 @@ router.post('/login', async (req, res) => {
         }
 
         // Create JWT token
-        const token = jwt.sign(
+        const token = jwt.sign( // create the token
             { userId: user.id },
             process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
         );
 
         // Set token in cookie
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+        res.cookie('token', token, { // set the token in the cookie
+            httpOnly: true, // httpOnly: true, // prevent the cookie from being accessed by JavaScript
+            secure: process.env.NODE_ENV === 'production', // secure: process.env.NODE_ENV === 'production', // only send the cookie over HTTPS
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
-        req.flash('success', 'Login successful');
+        req.flash('success', 'Login successful'); // flash the success message
         res.json({
             message: 'Login successful',
             token,
@@ -95,7 +100,7 @@ router.post('/login', async (req, res) => {
 
 // Handle logout
 router.get('/logout', (req, res) => {
-    req.session.destroy(err => {
+    req.session.destroy(err => { // destroy the session
         if (err) {
             return res.status(500).json({ error: 'Error logging out' });
         }
@@ -106,7 +111,7 @@ router.get('/logout', (req, res) => {
 
 // Route guard middleware
 const requireAuth = (req, res, next) => {
-    if (!req.session.userId) {
+    if (!req.session.userId) { // if the userId is not in the session
         return res.redirect('/auth/login');
     }
     next();
