@@ -85,7 +85,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/auth', authRoutes); // use the auth routes
 app.use('/transactions', authenticateToken, transactionRoutes); // use the transaction routes
-
+// Made by A^2
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`); // log the server is running
 });

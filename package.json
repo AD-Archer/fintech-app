@@ -10,8 +10,8 @@
     "build": "echo 'No build step required'"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "ad-archer",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
