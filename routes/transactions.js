@@ -1,6 +1,6 @@
 import express from 'express';
-import  Transaction  from '../models/DatabaseCreation.js';
-import  authenticateToken  from '../middleware/auth.js';
+import { Transaction } from '../models/DatabaseCreation.js';
+import authenticateToken from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -8,13 +8,13 @@ const router = express.Router();
 router.post('/', authenticateToken, async (req, res) => {
     try {
         const { type, amount, description } = req.body;
-        const userId = req.userId; // From auth middleware
+        const userId = req.userId; // This should still be userId from the auth middleware
 
         const transaction = await Transaction.create({
             type,
             amount,
             description,
-            userId
+            user_id: userId // Change to match the database column name
         });
 
         res.status(201).json({ message: 'Transaction created successfully', transaction });
@@ -31,7 +31,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         const transaction = await Transaction.findOne({
             where: {
                 id: req.params.id,
-                userId: req.userId
+                user_id: req.userId // Update to match the model
             }
         });
 
@@ -53,19 +53,17 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         const result = await Transaction.destroy({
             where: {
                 id: req.params.id,
-                userId: req.userId
+                user_id: req.userId // Update to match the model
             }
         });
 
         if (!result) {
-            req.flash('error', 'Transaction not found');
             return res.status(404).json({ error: 'Transaction not found' });
         }
 
-        req.flash('success', 'Transaction deleted successfully');
         res.json({ message: 'Transaction deleted successfully' });
     } catch (error) {
-        req.flash('error', 'Error deleting transaction');
+        console.error('Error deleting transaction:', error);
         res.status(500).json({ error: 'Error deleting transaction' });
     }
 });

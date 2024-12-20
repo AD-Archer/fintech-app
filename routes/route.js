@@ -1,5 +1,5 @@
-import express from 'express'; 
-import  Transaction  from '../models/DatabaseCreation.js'; 
+import express from 'express';
+import { Transaction } from '../models/DatabaseCreation.js';
 
 const router = express.Router();
 
@@ -9,19 +9,19 @@ router.get('/', async (req, res) => {
         console.log('User ID from request:', req.userId);
 
         const transactions = await Transaction.findAll({
-            where: { userId: req.userId },
+            where: { user_id: req.userId },
             order: [['createdAt', 'DESC']]
         });
 
         console.log('Found transactions:', transactions.length);
         console.log('Transaction data:', transactions);
 
-        res.render('pages/index', { 
+        res.render('pages/index', {
             transactions: transactions.map(t => t.toJSON())
-        }); 
+        });
     } catch (err) {
-        console.error('Error fetching transactions:', err); 
-        res.status(500).json({ 
+        console.error('Error fetching transactions:', err);
+        res.status(500).json({
             error: 'Error fetching transactions',
             details: err.message
         });
@@ -34,38 +34,15 @@ router.post('/transactions', async (req, res) => {
         const { type, amount, description } = req.body;
         const userId = req.userId; // From auth middleware
 
-        // Get current balance
-        const transactions = await Transaction.findAll({
-            where: { userId },
-            order: [['createdAt', 'DESC']]
-        });
-
-        let currentBalance = 0;
-        transactions.forEach(t => {
-            if (t.type === 'income') {
-                currentBalance += parseFloat(t.amount);
-            } else if (t.type === 'expense' || t.type === 'withdraw') {
-                currentBalance -= parseFloat(t.amount);
-            }
-        });
-
-        // Check if withdrawal is possible
-        if (type === 'withdraw') {
-            if (parseFloat(amount) > currentBalance) {
-                return res.status(400).json({ error: 'Insufficient balance for withdrawal' });
-            }
-        }
-
         // Create the transaction
-        const newTransaction = await Transaction.create({ 
-            type, 
-            amount: parseFloat(amount), 
+        const newTransaction = await Transaction.create({
+            type,
+            amount: parseFloat(amount),
             description,
-            userId,
-            balance: type === 'income' ? currentBalance + parseFloat(amount) : currentBalance - parseFloat(amount)
+            userId
         });
 
-        res.redirect('/');
+        res.redirect('/'); // Redirect to the index page after creating the transaction
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Error creating transaction' });
@@ -102,7 +79,7 @@ router.delete('/transactions/:id', async (req, res) => {
             where: { id }
         });
         if (deleted) {
-            res.redirect('/'); 
+            res.redirect('/');
         } else {
             res.status(404).json({ error: 'Transaction not found' });
         }

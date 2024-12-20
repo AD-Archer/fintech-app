@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User  from '../models/DatabaseCreation.js';
+import { User } from '../models/DatabaseCreation.js';
 
 const router = express.Router();
 
@@ -75,14 +75,14 @@ router.post('/login', async (req, res) => {
         );
 
         // Set token in cookie
-        res.cookie('token', token, { 
+        res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
         req.flash('success', 'Login successful');
-        res.json({ 
+        res.json({
             message: 'Login successful',
             token,
             redirect: '/dashboard'

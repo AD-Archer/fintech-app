@@ -406,7 +406,7 @@
                                 </button>
                                 <button class="btn btn-danger btn-sm delete-btn" 
                                         data-id="<%= transaction.id %>"
-                                        onclick="handleDelete(event, '<%= transaction.id %>')">
+                                        onclick="handleDelete(event, <%= transaction.id %>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -423,7 +423,7 @@
 
     <script>
         // Get transactions data
-        const transactions = <%- JSON.stringify(transactions) %>
+        const transactions = <%- JSON.stringify(transactions) %>;
 
         function calculateTotals() {
             let balance = 0;

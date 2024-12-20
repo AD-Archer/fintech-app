@@ -1,5 +1,5 @@
-import  sequelize  from '../config/pgdb.js';
-import  DataTypes  from 'sequelize';
+import sequelize from '../config/db.js';
+import { DataTypes } from 'sequelize';
 
 // Define User model
 const User = sequelize.define('User', {
@@ -10,27 +10,28 @@ const User = sequelize.define('User', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         validate: {
-            isEmail: true
-        }
+            isEmail: true,
+        },
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     balance: {
         type: DataTypes.DECIMAL(10, 2),
-        defaultValue: 0.00 // Default balance
-    }
+        allowNull: false,
+        defaultValue: 0.00,
+    },
 }, {
     timestamps: true,
-    tableName: 'users'
+    tableName: 'users',
 });
 
 // Define Transaction model
@@ -40,39 +41,44 @@ const Transaction = sequelize.define('Transaction', {
         primaryKey: true,
         autoIncrement: true,
     },
-    type: {
-        type: DataTypes.ENUM('income', 'expense', 'withdraw'),
+    user_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: User,
+            key: 'id',
+        },
     },
     amount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
+    transaction_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
+    type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     description: {
         type: DataTypes.TEXT,
+        allowNull: true,
     },
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: User, // Reference to User model
-            key: 'id'
-        }
-    }
 }, {
     timestamps: true,
-    tableName: 'transactions'
+    tableName: 'transactions',
 });
 
 // Define relationships
 User.hasMany(Transaction, {
-    foreignKey: 'userId',
-    onDelete: 'CASCADE'
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE',
 });
 Transaction.belongsTo(User, {
-    foreignKey: 'userId'
+    foreignKey: 'user_id',
 });
 
-
 // Export models
-export default Transaction;
+export { User, Transaction };
