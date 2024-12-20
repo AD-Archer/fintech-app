@@ -20,7 +20,9 @@ const app = express();
 const port = process.env.PORT || 2555;
 
 // Connect to PostgreSQL
-connect();
+connect().catch(err => {
+    console.error('Failed to connect to the database:', err);
+});
 
 // Middleware
 app.use(express.json());

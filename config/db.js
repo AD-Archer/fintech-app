@@ -19,6 +19,7 @@ export async function connect() {
         console.log('Connected to PostgreSQL database');
     } catch (err) {
         console.error('Unable to connect to the database:', err);
+        throw err; // Rethrow the error to be caught in server.js
     }
 }
 
