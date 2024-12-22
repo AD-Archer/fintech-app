@@ -1,5 +1,5 @@
 # Fintech App
-
+![Vercel Deploy](https://deploy-badge.vercel.app/vercel/fintech-app-blond?style=flat-square&logo=Site)
 ## Overview
 The Fintech App is a web application designed to manage tasks and user accounts. It utilizes Node.js with Express for the backend, MySQL for the database, and serves a simple HTML frontend. This application allows users to create accounts, manage tasks efficiently, and includes secure user authentication.
 
