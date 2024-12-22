@@ -24,6 +24,7 @@
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
@@ -34,8 +35,7 @@
     "pg-hstore": "^2.3.4",
     "pgshims": "github:neondatabase/serverless",
     "rm": "^0.1.8",
-    "sequelize": "^6.37.5",
-    "vercel": "^39.2.2"
+    "sequelize": "^6.37.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

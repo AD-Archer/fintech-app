@@ -8,6 +8,7 @@ async function handleRegister(event) {
     // Clear previous error messages
     const errorDiv = document.getElementById('error-message');
     errorDiv.style.display = 'none';
+    errorDiv.textContent = ''; // Clear previous error messages
     
     // Get form data
     const formData = {
@@ -19,11 +20,6 @@ async function handleRegister(event) {
     // Basic validation
     if (!formData.name || !formData.email || !formData.password) {
         showError('All fields are required');
-        return false;
-    }
-    
-    if (formData.password.length < 6) {
-        showError('Password must be at least 6 characters long');
         return false;
     }
     
@@ -39,7 +35,9 @@ async function handleRegister(event) {
         const data = await response.json();
         
         if (!response.ok) {
-            showError(data.error || 'Registration failed');
+            // Show error messages from the server
+            const errors = data.errors.map(err => err.msg).join(', ');
+            showError(errors || 'Registration failed');
             return false;
         }
         
@@ -53,6 +51,9 @@ async function handleRegister(event) {
 
 function showError(message) {
     const errorDiv = document.getElementById('error-message');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
+    errorDiv.textContent = message; // Set the error message
+    errorDiv.style.display = 'block'; // Show the error message
 }
+
+// Attach the handleRegister function to the form submission
+document.getElementById('registration-form').addEventListener('submit', handleRegister);

@@ -85,7 +85,21 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/auth', authRoutes); // use the auth routes
 app.use('/transactions', authenticateToken, transactionRoutes); // use the transaction routes
+
+// for any routes that do not exist it will redirect
+app.get('*', (req, res) => {
+    res.redirect('/'); // Redirect to home page
+});
+
 // Made by A^2
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`); // log the server is running
+});
+
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self';");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    next();
 });
