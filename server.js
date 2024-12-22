@@ -11,6 +11,7 @@ import path from 'path';
 import 'dotenv/config';
 import session from 'express-session';
 import flash from 'connect-flash';
+import helmet from 'helmet';
 
 // File imports
 import { Transaction } from './models/DatabaseCreation.js';
@@ -19,7 +20,12 @@ import { router as authRoutes } from './routes/auth.js';
 import { connect } from './config/db.js';
 import authenticateToken from './middleware/auth.js';
 
-
+// Rate limiting
+import rateLimit from 'express-rate-limit';
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
 
 const __filename = fileURLToPath(import.meta.url); // get the filename
 const __dirname = path.dirname(__filename); // get the directory name
@@ -38,10 +44,15 @@ app.use(express.urlencoded({ extended: true })); // parse the request body as UR
 app.use(methodOverride('_method')); // override the HTTP method
 app.use(cookieParser()); // parse the cookie header
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-session-secret', // set the session secret
-    resave: false, // do not save the session if it has not changed
-    saveUninitialized: true, // save uninitialized sessions
-    cookie: { secure: process.env.NODE_ENV === 'production' } // secure the cookie if in production
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'strict'
+    }
 }));
 app.use(flash());
 
@@ -56,6 +67,21 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs'); // set the view engine to ejs
 app.set('views', path.join(__dirname, 'views')); // set the views directory
 app.use(express.static(path.join(__dirname, 'public'))); // serve static files from the public directory(this isn't needed but its good practice to inlcude)
+
+// Security Middleware (move before routes)
+app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "stackpath.bootstrapcdn.com", "cdnjs.cloudflare.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "stackpath.bootstrapcdn.com", "cdnjs.cloudflare.com"],
+        imgSrc: ["'self'", "data:", "blob:"],
+        fontSrc: ["'self'", "cdnjs.cloudflare.com"]
+    }
+}));
+
+// Rate limiting
+app.use(limiter);
 
 // Dashboard route (protected)
 app.get('/dashboard', authenticateToken, async (req, res) => {
@@ -101,5 +127,16 @@ app.use((req, res, next) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "DENY");
     res.setHeader("X-XSS-Protection", "1; mode=block");
+    console.log(`Received request: ${req.method} ${req.url}`);
     next();
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    // Don't expose error details in production
+    if (process.env.NODE_ENV === 'production') {
+        res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+        res.status(500).json({ message: err.message, stack: err.stack });
+    }
 });
