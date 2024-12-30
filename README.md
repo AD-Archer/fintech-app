@@ -1,98 +1,115 @@
 # Fintech App
 ![Vercel Deploy](https://deploy-badge.vercel.app/vercel/fintech-app-blond?style=flat-square&logo=Site)
+
 ## Overview
-The Fintech App is a web application designed to manage tasks and user accounts. It utilizes Node.js with Express for the backend, MySQL for the database, and serves a simple HTML frontend. This application allows users to create accounts, manage tasks efficiently, and includes secure user authentication.
+The Fintech App is a modern web application designed for personal finance management. Built with Node.js and Express, it leverages PostgreSQL on Neon Tech for cloud database storage, providing a reliable and scalable solution for managing financial transactions. The application features a clean, user-friendly interface built with EJS templates and modern CSS.
 
 ## Features
-- User creation with validation
-- JWT-based authentication for secure access
-- Task management (create and read tasks)
-- RESTful API for interacting with user and task data
-- Static file serving for the frontend
+- Secure user authentication and session management
+- Personal financial transaction tracking
+- Dashboard with transaction history
+- Responsive design for mobile and desktop use
+- Flash messages for user feedback
+- Cloud-based PostgreSQL database for reliable data storage
 
 ## Technologies Used
-- **Node.js**: JavaScript runtime for building the backend
-- **Express**: Web framework for Node.js
-- **MySQL**: Relational database for storing user and task data
-- **Sequelize**: ORM for MySQL
-- **jsonwebtoken**: For JWT-based authentication
-- **dotenv**: Module for loading environment variables
-- **Nodemon**: Development tool for automatically restarting the server on file changes
+- **Backend**: Node.js with Express
+- **Database**: PostgreSQL (hosted on Neon Tech)
+- **Template Engine**: EJS
+- **Authentication**: JWT and Session-based auth
+- **CSS Framework**: Modern CSS with responsive design
+- **Deployment**: Vercel
+- **Other Tools**: 
+  - `method-override` for RESTful methods
+  - `connect-flash` for user notifications
+  - `express-session` for session management
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (v14 or later)
-- MySQL (v5.7 or later)
-- A package manager like npm
+- npm or yarn package manager
+- A Neon Tech account for PostgreSQL database
 
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/fintech-app.git
+   git clone <your-repository-url>
    cd fintech-app
    ```
 
-2. Install the dependencies:
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Create a `.env` file in the root directory of the backend folder and add your database configuration:
+3. Set up your environment variables by creating a `.env` file:
    ```plaintext
-   DB_HOST=localhost
-   DB_USER=your_mysql_username
-   DB_PASSWORD=your_mysql_password
-   DB_PORT=3306
    PORT=2555
-   JWT_SECRET=your_jwt_secret  # Secret for JWT
+   JWT_SECRET=your_jwt_secret
+   SESSION_SECRET=your_session_secret
+   DATABASE_URL=your_neon_tech_postgres_url
    ```
 
+   Replace `your_neon_tech_postgres_url` with your actual Neon Tech PostgreSQL connection string.
+
 ### Running the Application
-To start the application, run:
+Development mode:
+```bash
+npm run dev
+```
+
+Production mode:
 ```bash
 npm start
 ```
-This command will use Nodemon to start the server and watch for file changes.
 
-### API Endpoints
-- **POST /auth/register**: Register a new user
-- **POST /auth/login**: Authenticate user and return a JWT
-- **GET /auth/logout**: Logout the user and clear the session
-- **POST /tasks**: Create a new task
-- **GET /tasks**: Retrieve all tasks
-- **GET /status**: Check if the server is running
+### Key Routes
+- **/** - Landing page
+- **/dashboard** - Main transaction dashboard (requires authentication)
+- **/auth/login** - User login
+- **/auth/register** - New user registration
+- **/transactions** - Transaction management
 
 ### Project Structure
 ```
 fintech-app/
 │
-├── backend/
-│   ├── config/
-│   │   └── db.js                # Database connection setup
-│   ├── middleware/
-│   │   └── auth.js              # Authentication middleware
-│   ├── models/
-│   │   ├── DatabaseCreation.js   # User and Transaction models
-│   │   └── UserCreation.js       # User creation logic
-│   ├── routes/
-│   │   ├── auth.js               # Authentication routes
-│   │   └── route.js              # Task-related routes
-│   ├── server.js                 # Main server file
-│   └── validateTask.js           # Task validation logic
-│
-├── .env                          # Environment variables
-├── package.json                  # Project metadata and dependencies
-└── README.md                     # Project documentation
+├── config/
+│   └── db.js              # Database configuration
+├── middleware/
+│   └── auth.js            # Authentication middleware
+├── models/
+│   ├── DatabaseCreation.js # Database models
+│   └── UserCreation.js    # User model logic
+├── public/
+│   ├── css/              # Stylesheets
+│   └── js/               # Client-side JavaScript
+├── routes/
+│   ├── auth.js           # Authentication routes
+│   └── transactions.js   # Transaction routes
+├── views/
+│   └── pages/            # EJS templates
+├── server.js             # Main application file
+└── .env                  # Environment variables
 ```
 
+## Database Setup
+This application uses Neon Tech's PostgreSQL service. To set up your own instance:
+
+1. Create an account at [Neon Tech](https://neon.tech)
+2. Create a new project and database
+3. Copy your connection string
+4. Update your `.env` file with the connection string
+
+## Security Notes
+- Never commit your `.env` file
+- Keep your JWT_SECRET and SESSION_SECRET secure
+- The application uses secure session cookies in production
+- Database credentials are managed through environment variables
+
 ## Contributing
-Contributions are welcome! If you have suggestions for improvements or new features, feel free to open an issue or submit a pull request.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### Notes
-- Replace `yourusername` in the clone command with your actual GitHub username.
-- Ensure that the `.env` file contains the correct database credentials and JWT secret.
-- Adjust any sections as necessary to fit your specific project details or requirements.
+This project is licensed under the MIT License.
