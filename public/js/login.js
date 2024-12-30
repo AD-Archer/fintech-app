@@ -1,9 +1,15 @@
+// Configure toastr options
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-top-right",
+    timeOut: 3000,
+    extendedTimeOut: 1000,
+    preventDuplicates: true
+};
+
 async function handleLogin(event) {
     event.preventDefault();
-    
-    // Clear previous error messages
-    const errorDiv = document.getElementById('error-message');
-    errorDiv.style.display = 'none';
     
     // Get form data
     const formData = {
@@ -13,7 +19,7 @@ async function handleLogin(event) {
     
     // Basic validation
     if (!formData.email || !formData.password) {
-        showError('Email and password are required');
+        toastr.error('Email and password are required');
         return false;
     }
     
@@ -29,20 +35,35 @@ async function handleLogin(event) {
         const data = await response.json();
         
         if (!response.ok) {
-            showError(data.error || 'Login failed');
+            // Check if it's a rate limit error
+            if (response.status === 429) {
+                toastr.error('Too many login attempts. Please try again later.');
+                return false;
+            }
+            
+            // Handle other errors
+            toastr.error(data.error || 'Login failed');
             return false;
         }
         
-        // Login successful - redirect to home
-        window.location.href = '/dashboard';
+        // Show success message
+        toastr.success('Login successful! Redirecting...');
+        
+        // Wait for the toast to be shown before redirecting
+        setTimeout(() => {
+            window.location.href = data.redirect || '/dashboard';
+        }, 1000);
+        
     } catch (error) {
-        showError('An error occurred during login');
+        toastr.error('An error occurred during login');
         return false;
     }
 }
 
-function showError(message) {
-    const errorDiv = document.getElementById('error-message');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-}
+// Add event listener when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+});

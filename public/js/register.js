@@ -17,9 +17,28 @@ async function handleRegister(event) {
         password: document.getElementById('password').value
     };
     
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
     // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.name || !formData.email || !formData.password || !confirmPassword) {
         showError('All fields are required');
+        return false;
+    }
+
+    // Password validation
+    if (formData.password !== confirmPassword) {
+        showError('Passwords do not match');
+        return false;
+    }
+
+    // Password strength validation
+    if (formData.password.length < 8) {
+        showError('Password must be at least 8 characters long');
+        return false;
+    }
+
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+        showError('Password must contain at least one uppercase letter, one lowercase letter, and one number');
         return false;
     }
     
