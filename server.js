@@ -18,6 +18,7 @@ import transactionRoutes from './routes/transactions.js';
 import { router as authRoutes } from './routes/auth.js';
 import { connect } from './config/db.js';
 import authenticateToken from './middleware/auth.js';
+import { transactionLimiter } from './middleware/rateLimit.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,7 +56,15 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Dashboard route (protected)
+// Routes
+app.use('/auth', authRoutes);
+
+// Home route (public)
+app.get('/', (req, res) => {
+    res.render('pages/landingpage');
+});
+
+// Protected routes
 app.get('/dashboard', authenticateToken, async (req, res) => {
     try {
         const transactions = await Transaction.findAll({
@@ -75,14 +84,8 @@ app.get('/dashboard', authenticateToken, async (req, res) => {
     }
 });
 
-// Home route (public)
-app.get('/', (req, res) => {
-    res.render('pages/landingpage');
-});
-
-// Routes
-app.use('/auth', authRoutes);
-app.use('/transactions', authenticateToken, transactionRoutes);
+// Apply rate limiting only to transaction CRUD operations
+app.use('/transactions', authenticateToken, transactionLimiter, transactionRoutes);
 
 // for any routes that do not exist it will redirect
 app.get('*', (req, res) => {
