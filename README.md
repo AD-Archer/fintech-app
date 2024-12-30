@@ -34,7 +34,7 @@ The Fintech App is a modern web application designed for personal finance manage
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone <your-repository-url>
+   git clone https://github.com/AD-Archer/fintech-app.git
    cd fintech-app
    ```
 
