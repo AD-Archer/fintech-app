@@ -20,6 +20,11 @@ import { connect } from './config/db.js';
 import authenticateToken from './middleware/auth.js';
 import { transactionLimiter } from './middleware/rateLimit.js';
 
+// Vercel imports
+import { inject } from "@vercel/analytics" // dev import for analytics
+import { injectSpeedInsights } from '@vercel/speed-insights'; // dev import for speed insights
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
