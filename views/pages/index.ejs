@@ -215,37 +215,41 @@
             <div class="list-group" id="transaction-list">
                 <% if (transactions && transactions.length > 0) { %>
                     <% transactions.forEach(transaction => { %>
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="badge bg-success transaction-type type-<%= transaction.type %>">
-                                    <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
-                                </span>
-                                <span class="transaction-amount ms-3">
-                                    $<%= transaction.amount %>
-                                </span>
-                                <div class="transaction-description mt-1">
-                                    <%= transaction.description %>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                <div class="transaction-info">
+                                    <span class="badge rounded-pill type-<%= transaction.type %>">
+                                        <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
+                                    </span>
+                                    <span class="transaction-amount fw-bold">
+                                        $<%= transaction.amount %>
+                                    </span>
+                                    <% if (transaction.description) { %>
+                                        <div class="transaction-description">
+                                            <%= transaction.description %>
+                                        </div>
+                                    <% } %>
                                 </div>
-                            </div>
-                            <div class="action-buttons">
-                                <button class="btn btn-warning btn-sm edit-btn" 
-                                        data-id="<%= transaction.id %>" 
-                                        data-type="<%= transaction.type %>" 
-                                        data-amount="<%= transaction.amount %>" 
-                                        data-description="<%= transaction.description %>">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm delete-btn" 
-                                        data-id="<%= transaction.id %>"
-                                        onclick="handleDelete(event, <%= transaction.id %>)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline-secondary btn-sm edit-btn"
+                                            data-id="<%= transaction.id %>"
+                                            data-type="<%= transaction.type %>"
+                                            data-amount="<%= transaction.amount %>"
+                                            data-description="<%= transaction.description %>">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm delete-btn"
+                                            onclick="handleDelete(event, <%= transaction.id %>)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <div class="text-center py-3">
-                        <p>No transactions found.</p>
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p class="mb-0">No transactions found</p>
                     </div>
                 <% } %>
             </div>
