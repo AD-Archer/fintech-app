@@ -24,6 +24,8 @@ import { transactionLimiter } from './middleware/rateLimit.js';
 import { inject } from "@vercel/analytics" // dev import for analytics
 import { injectSpeedInsights } from '@vercel/speed-insights'; // dev import for speed insights
 
+inject()
+injectSpeedInsights()
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
