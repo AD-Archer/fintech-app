@@ -255,4 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Check if CSS is loaded
+    const styles = document.styleSheets;
+    let cssLoaded = false;
+    for (let i = 0; i < styles.length; i++) {
+        if (styles[i].href && styles[i].href.includes('index.css')) {
+            cssLoaded = true;
+            console.log('CSS loaded successfully');
+            break;
+        }
+    }
+    if (!cssLoaded) {
+        console.error('CSS file not loaded properly');
+    }
 });

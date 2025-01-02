@@ -8,12 +8,23 @@
     <meta name="description" content="Manage your finances effectively with Fintech. Track your income, expenses, and savings all in one place.">
     <meta name="keywords" content="Fintech, finance tracker, budget, savings, income, expenses">
 
-
-    <!-- Links -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/images/wallet.svg">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/index.css">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/index.css?v=<%= Date.now() %>">
+    
+    <!-- Ensure CSS is not cached during development -->
+    <% if (process.env.NODE_ENV !== 'production') { %>
+    <script>
+        // Add timestamp to CSS file to prevent caching
+        document.querySelector('link[href="/css/index.css"]').href += '?v=' + Date.now();
+    </script>
+    <% } %>
 </head>
 <body class="bg-light">
     <!-- Include toast notifications partial -->
@@ -25,9 +36,14 @@
             <a class="navbar-brand" href="/">
                 <i class="fas fa-wallet me-2"></i>Finance Tracker
             </a>
-            <a href="/auth/logout" class="btn btn-link text-white logout-btn">
-                <i class="fas fa-sign-out-alt me-1"></i>Logout
-            </a>
+            <div class="d-flex align-items-center">
+                <div class="text-white me-3 px-3 py-2 rounded" style="background: rgba(255, 255, 255, 0.1);">
+                    <i class="fas fa-user me-2"></i>Hello, <%= user.name %>! 👋
+                </div>
+                <a href="/auth/logout" class="btn btn-link text-white logout-btn">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -199,37 +215,41 @@
             <div class="list-group" id="transaction-list">
                 <% if (transactions && transactions.length > 0) { %>
                     <% transactions.forEach(transaction => { %>
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="badge bg-success transaction-type type-<%= transaction.type %>">
-                                    <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
-                                </span>
-                                <span class="transaction-amount ms-3">
-                                    $<%= transaction.amount %>
-                                </span>
-                                <div class="transaction-description mt-1">
-                                    <%= transaction.description %>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                <div class="transaction-info">
+                                    <span class="badge rounded-pill type-<%= transaction.type %>">
+                                        <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
+                                    </span>
+                                    <span class="transaction-amount fw-bold">
+                                        $<%= transaction.amount %>
+                                    </span>
+                                    <% if (transaction.description) { %>
+                                        <div class="transaction-description">
+                                            <%= transaction.description %>
+                                        </div>
+                                    <% } %>
                                 </div>
-                            </div>
-                            <div class="action-buttons">
-                                <button class="btn btn-warning btn-sm edit-btn" 
-                                        data-id="<%= transaction.id %>" 
-                                        data-type="<%= transaction.type %>" 
-                                        data-amount="<%= transaction.amount %>" 
-                                        data-description="<%= transaction.description %>">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm delete-btn" 
-                                        data-id="<%= transaction.id %>"
-                                        onclick="handleDelete(event, <%= transaction.id %>)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline-secondary btn-sm edit-btn"
+                                            data-id="<%= transaction.id %>"
+                                            data-type="<%= transaction.type %>"
+                                            data-amount="<%= transaction.amount %>"
+                                            data-description="<%= transaction.description %>">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm delete-btn"
+                                            onclick="handleDelete(event, <%= transaction.id %>)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <div class="text-center py-3">
-                        <p>No transactions found.</p>
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p class="mb-0">No transactions found</p>
                     </div>
                 <% } %>
             </div>
