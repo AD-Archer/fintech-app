@@ -8,12 +8,23 @@
     <meta name="description" content="Manage your finances effectively with Fintech. Track your income, expenses, and savings all in one place.">
     <meta name="keywords" content="Fintech, finance tracker, budget, savings, income, expenses">
 
-
-    <!-- Links -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/images/wallet.svg">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/index.css">
+    
+    <!-- Ensure CSS is not cached during development -->
+    <% if (process.env.NODE_ENV !== 'production') { %>
+    <script>
+        // Add timestamp to CSS file to prevent caching
+        document.querySelector('link[href="/css/index.css"]').href += '?v=' + Date.now();
+    </script>
+    <% } %>
 </head>
 <body class="bg-light">
     <!-- Include toast notifications partial -->
