@@ -1,5 +1,5 @@
 // This file is used to create users.
-import { User } from './DatabaseCreation.js'; // Import User model
+import { User } from './TableCreation.js'; // Import User model
 
 const createUser = async (username, email, password) => {
     try {
