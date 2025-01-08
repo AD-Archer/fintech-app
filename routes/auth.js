@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/DatabaseCreation.js';
+import { User } from '../models/TableCreation.js';
 import { check, validationResult } from 'express-validator';
 
 const router = express.Router();
