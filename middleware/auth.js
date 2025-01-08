@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { User } from '../models/DatabaseCreation.js';
+import { User } from '../models/TableCreation.js';
 
 const authenticateToken = async (req, res, next) => {
     const token = req.cookies.token;

@@ -6,7 +6,7 @@ let sequelize;
 
 if (process.env.VERCEL_ENV) {
     // Configuration for Vercel deployment
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
+    sequelize = new Sequelize(process.env.DATABASE_URL, { // I orginally had plans to have seperate databases for production and testing environments but decided against it at this point and time
         dialect: 'postgres',
         dialectModule: pg,
         ssl: true,

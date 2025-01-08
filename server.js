@@ -13,7 +13,7 @@ import session from 'express-session';
 import flash from 'connect-flash';
 
 // File imports
-import { Transaction } from './models/DatabaseCreation.js';
+import { Transaction } from './models/TableCreation.js';
 import transactionRoutes from './routes/transactions.js';
 import { router as authRoutes } from './routes/auth.js';
 import { connect } from './config/db.js';
