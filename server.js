@@ -24,8 +24,8 @@ import { transactionLimiter } from './middleware/rateLimit.js';
 import { inject } from "@vercel/analytics" // dev import for analytics
 import { injectSpeedInsights } from '@vercel/speed-insights'; // dev import for speed insights
 
-inject()
-injectSpeedInsights()
+inject() // analytics
+injectSpeedInsights() // speed insights
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -89,14 +89,14 @@ app.get('/', (req, res) => {
 });
 
 // Protected routes
-app.get('/dashboard', authenticateToken, async (req, res) => {
-    try {
-        const transactions = await Transaction.findAll({
+app.get('/dashboard', authenticateToken, async (req, res) => { 
+    try { // checks if the user is logged in and has a valid token 
+        const transactions = await Transaction.findAll({ // find the users transactions
             where: { user_id: req.userId },
             order: [['transaction_date', 'DESC']]
         });
 
-        res.render('pages/index', {
+        res.render('pages/index', { // renders the page
             transactions: transactions.map(t => t.toJSON()),
             user: req.user
         });
@@ -111,13 +111,13 @@ app.get('/dashboard', authenticateToken, async (req, res) => {
 // Apply rate limiting only to transaction CRUD operations
 app.use('/transactions', authenticateToken, transactionLimiter, transactionRoutes);
 
-// for any routes that do not exist it will redirect
-app.get('*', (req, res) => {
+app.get('*', (req, res) => { // for any routes that do not exist it will redirect
+
     res.redirect('/');
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => { 
     console.error(err.stack);
     res.status(500).json({ message: 'Internal Server Error' });
 });
