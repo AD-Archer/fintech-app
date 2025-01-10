@@ -8,6 +8,8 @@
     <meta name="description" content="Manage your finances effectively with Fintech. Track your income, expenses, and savings all in one place.">
     <meta name="keywords" content="Fintech, finance tracker, budget, savings, income, expenses">
 
+    <!-- Google Ads -->
+    <meta name="google-adsense-account" content="ca-pub-9831610369524751">
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/images/wallet.svg">
     
@@ -214,7 +216,7 @@
             <h3 class="mb-4">Transaction History</h3>
             <div class="list-group" id="transaction-list">
                 <% if (transactions && transactions.length > 0) { %>
-                    <% transactions.forEach(transaction => { %>
+                    <% transactions.forEach(transaction => { %> <!-- for each to handle creation of cards for transactions-->
                         <div class="list-group-item">
                             <div class="d-flex justify-content-between align-items-start flex-wrap">
                                 <div class="transaction-info">
@@ -255,6 +257,9 @@
             </div>
         </div>
     </div>
+    <!-- Google Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9831610369524751"
+    crossorigin="anonymous"></script>
 
     <!-- Pass transactions data to window object so it's accessible in index.js -->
     <script>
