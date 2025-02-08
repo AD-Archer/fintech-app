@@ -10,6 +10,56 @@ const router = express.Router();
 This script is intended to handle the user authentication and registration
 */
 
+// Guest token route MUST be first
+router.post('/guest-token', (req, res) => {
+    console.log('Guest token route hit');
+    try {
+        // Create a guest user object with a unique ID
+        const guestUser = {
+            id: `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            name: 'Guest User',
+            isGuest: true
+        };
+
+        // Create JWT token for guest
+        const token = jwt.sign(
+            { 
+                userId: guestUser.id, 
+                isGuest: true,
+                name: guestUser.name 
+            },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '24h' }
+        );
+
+        // Set session data
+        req.session.userId = guestUser.id;
+        req.session.isGuest = true;
+
+        // Set token in cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
+
+        // Make sure we're sending JSON response with correct headers
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(200).json({
+            success: true,
+            message: 'Guest access granted',
+            token,
+            redirect: '/dashboard'
+        });
+    } catch (error) {
+        console.error('Guest token error:', error);
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(500).json({ 
+            success: false,
+            error: 'Error creating guest session' 
+        });
+    }
+});
 
 // Render register page
 router.get('/register', (req, res) => { // get the register page and sends it toe auth/register

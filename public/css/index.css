@@ -36,9 +36,9 @@ body {
 
 /* Transaction list styles */
 .list-group-item {
+    padding: 1rem;
     margin-bottom: 0.5rem;
-    border-radius: 10px !important;
-    background: #fff;
+    border-radius: 0.5rem;
     border: 1px solid rgba(0,0,0,0.125);
 }
 
@@ -58,67 +58,62 @@ body {
 }
 
 .type-income {
-    background-color: #27ae60;
+    background-color: #28a745;
     color: white;
-    border: none;
 }
 
 .type-expense {
-    background-color: #e74c3c;
+    background-color: #dc3545;
     color: white;
-    border: none;
 }
 
 .type-withdraw {
-    background-color: #f39c12;
-    color: white;
-    border: none;
+    background-color: #ffc107;
+    color: #212529;
 }
 
 /* Transaction amount styling */
 .transaction-amount {
-    font-weight: 600;
     font-size: 1.1rem;
-    color: #2c3e50;
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
 
 /* Transaction description styling */
 .transaction-description {
-    color: #666;
     margin-top: 0.5rem;
+    color: #6c757d;
     font-size: 0.9rem;
 }
 
 /* Form elements */
 .form-control {
-    border: 2px solid var(--border-color);
     border-radius: 8px;
+    border: 2px solid #e9ecef;
     padding: 0.75rem;
 }
 
 .form-control:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(41, 128, 185, 0.25);
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
 }
 
 /* Buttons */
 .btn {
-    padding: 0.75rem 1.5rem;
     border-radius: 8px;
-    font-weight: 600;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
     transition: all 0.2s ease;
 }
 
 .btn-primary {
-    background-color: var(--accent-color);
-    border: none;
-    color: white;
+    background-color: #3498db;
+    border-color: #3498db;
 }
 
 .btn-primary:hover {
-    background-color: #2573a7;
-    transform: translateY(-2px);
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-1px);
 }
 
 /* Mobile optimizations */
@@ -188,4 +183,86 @@ body {
     .card-body {
         padding: 1rem;
     }
+}
+
+/* Add or update these styles */
+.badge.rounded-pill {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Ensure text does not overflow */
+    text-overflow: ellipsis; /* Add ellipsis if text is too long */
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-buttons .btn {
+    padding: 0.375rem 0.75rem;
+}
+
+/* Card styles */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Form styles */
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Button styles */
+.btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* Form styles */
+.form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.5rem; /* Adjust padding */
+    font-size: 1rem;
+    appearance: none;
+    background-color: #fff;
+    background-image: none; /* Remove custom arrow */
+}
+
+.form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
 }
