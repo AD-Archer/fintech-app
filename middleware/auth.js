@@ -5,30 +5,50 @@ const authenticateToken = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
-        return res.status(401).json({ error: 'Access denied. No token provided.' });
+        return res.redirect('/auth/login');
     }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
         req.userId = decoded.userId;
+        req.isGuest = decoded.isGuest || false;
         
-        // Fetch user data
-        const user = await User.findByPk(decoded.userId);
-        if (!user) {
-            return res.status(401).json({ error: 'User not found' });
+        // If it's a guest user, skip database check
+        if (req.isGuest) {
+            req.user = {
+                id: decoded.userId,
+                name: 'Guest User',
+                isGuest: true
+            };
+            return next();
         }
 
-        // Add user data to request
-        req.user = {
-            id: user.id,
-            name: user.name,
-            email: user.email
-        };
+        // For regular users, fetch from database
+        try {
+            const user = await User.findByPk(decoded.userId);
+            if (!user) {
+                res.clearCookie('token');
+                return res.redirect('/auth/login');
+            }
 
-        next();
-    } catch (error) {
-        console.error('Authentication error:', error);
-        res.status(403).json({ error: 'Invalid token.' });
+            // Add user data to request
+            req.user = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                isGuest: false
+            };
+
+            next();
+        } catch (dbError) {
+            console.error('Database error:', dbError);
+            res.clearCookie('token');
+            return res.redirect('/auth/login');
+        }
+    } catch (err) {
+        console.error('Token verification error:', err);
+        res.clearCookie('token');
+        return res.redirect('/auth/login');
     }
 };
 

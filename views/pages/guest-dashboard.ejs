@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Dashboard - Fintech</title>
+    <link rel="icon" type="image/svg+xml" href="/images/wallet.svg">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body class="bg-light">
+    <%- include('../partials/toast') %>
+    
+    <!-- Guest Mode Warning Banner -->
+    <div class="alert alert-warning text-center mb-0" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        You are in Guest Mode. Your data is stored locally and will be lost if you clear your browser data.
+        <a href="/auth/register" class="alert-link ms-2">Register for free</a> to save your data permanently!
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c3e50;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-wallet me-2"></i>Finance Tracker (Guest Mode)
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="text-white me-3 px-3 py-2 rounded" style="background: rgba(255, 255, 255, 0.1);">
+                    <i class="fas fa-user-secret me-2"></i>Guest Mode
+                    <span class="badge bg-warning text-dark ms-2" id="storage-usage">0%</span>
+                </div>
+                <a href="/auth/login" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Storage Usage Bar -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-database me-2"></i>Storage Usage
+                </h5>
+                <div class="progress">
+                    <div class="progress-bar" id="storage-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Guest mode is limited to 5MB of storage. Consider registering for unlimited storage!
+                </small>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Balance</h6>
+                        <h3 class="card-title" id="total-balance">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Income</h6>
+                        <h3 class="card-title text-success" id="total-income">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Expenses</h6>
+                        <h3 class="card-title text-danger" id="total-expenses">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Withdrawals</h6>
+                        <h3 class="card-title text-warning" id="total-withdrawals">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Add New Transaction</h5>
+                <form id="transaction-form">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-control" id="type" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                                <option value="withdraw">Withdrawal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount" step="0.01" min="0.01" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description" maxlength="100">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Add Transaction
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Recent Transactions</h5>
+                <div class="list-group" id="transaction-list">
+                    <!-- Transactions will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="/js/guest.js"></script>
+</body>
+</html> 

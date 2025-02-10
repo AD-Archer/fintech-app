@@ -5,17 +5,31 @@ const router = express.Router();
 // Render index page with transactions
 router.get('/', async (req, res) => {
     try {
-        console.log('User ID from request:', req.userId);
-
-        // You can remove the transaction fetching logic from here
         res.render('pages/index', {
-            transactions: [] // Placeholder, as we will fetch transactions in transactions.js
+            transactions: [] 
         });
     } catch (err) {
         console.error('Error fetching transactions:', err);
         res.status(500).json({
             error: 'Error fetching transactions',
             details: err.message
+        });
+    }
+});
+
+// Guest dashboard route - make it explicit
+router.get('/guest-dashboard', (req, res) => {
+    console.log('Guest dashboard route hit');
+    try {
+        res.render('pages/guest-dashboard', {
+            user: { name: 'Guest' },
+            success: req.flash('success'),
+            error: req.flash('error')
+        });
+    } catch (err) {
+        console.error('Error rendering guest dashboard:', err);
+        res.status(500).render('pages/error', { 
+            error: 'Error loading guest dashboard' 
         });
     }
 });

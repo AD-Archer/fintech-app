@@ -67,3 +67,52 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', handleLogin);
     }
 });
+
+// Add this function after the handleLogin function
+async function continueAsGuest() {
+    try {
+        // Initialize guest storage if not exists
+        if (!localStorage.getItem('guestTransactions')) {
+            localStorage.setItem('guestTransactions', JSON.stringify([]));
+        }
+        
+        console.log('Attempting to get guest token...');
+        
+        // Get guest token from server
+        const response = await fetch('/auth/guest-token', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                timestamp: Date.now() // Add some data to ensure it's a proper POST
+            })
+        });
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Server sent non-JSON response');
+        }
+
+        const data = await response.json();
+        console.log('Response:', data);
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || 'Failed to initialize guest session');
+        }
+        
+        // Show success message
+        toastr.success(data.message || 'Entering guest mode...');
+        
+        // Wait for the toast to be shown before redirecting
+        setTimeout(() => {
+            window.location.href = data.redirect || '/dashboard';
+        }, 1000);
+        
+    } catch (error) {
+        console.error('Guest mode error:', error);
+        toastr.error('Error initializing guest mode: ' + error.message);
+    }
+}

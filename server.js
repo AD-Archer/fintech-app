@@ -15,10 +15,11 @@ import flash from 'connect-flash';
 // File imports
 import { Transaction } from './models/TableCreation.js';
 import transactionRoutes from './routes/transactions.js';
-import { router as authRoutes } from './routes/auth.js';
+import { router as authRoutes, requireAuth } from './routes/auth.js';
 import { connect } from './config/db.js';
 import authenticateToken from './middleware/auth.js';
 import { transactionLimiter } from './middleware/rateLimit.js';
+import mainRouter from './routes/route.js';
 
 // Vercel imports
 import { inject } from "@vercel/analytics" // dev import for analytics
@@ -80,46 +81,59 @@ app.use((req, res, next) => {
     next();
 });
 
-// Routes
+// Routes setup - order matters!
+// 1. First, set up auth routes
 app.use('/auth', authRoutes);
 
-// Home route (public)
+// 2. Then the home route
 app.get('/', (req, res) => {
     res.render('pages/landingpage');
 });
 
-// Protected routes
+// 3. Protected dashboard route
 app.get('/dashboard', authenticateToken, async (req, res) => { 
-    try { // checks if the user is logged in and has a valid token 
-        const transactions = await Transaction.findAll({ // find the users transactions
+    try {
+        if (req.isGuest) {
+            return res.render('pages/guest-dashboard', {
+                user: { name: 'Guest User' },
+                transactions: [],
+                success: req.flash('success'),
+                error: req.flash('error')
+            });
+        }
+        // Regular user flow
+        const transactions = await Transaction.findAll({
             where: { user_id: req.userId },
             order: [['transaction_date', 'DESC']]
         });
 
-        res.render('pages/index', { // renders the page
+        res.render('pages/index', {
             transactions: transactions.map(t => t.toJSON()),
             user: req.user
         });
     } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.error('Error:', error);
         res.status(500).render('pages/error', {
             error: 'Error loading dashboard'
         });
     }
 });
 
-// Apply rate limiting only to transaction CRUD operations
+// 4. Then the main router
+app.use('/', mainRouter);
+
+// 5. Transaction routes
 app.use('/transactions', authenticateToken, transactionLimiter, transactionRoutes);
 
-app.get('*', (req, res) => { // for any routes that do not exist it will redirect
-
-    res.redirect('/');
-});
-
-// Error handling middleware
+// 6. Error handling
 app.use((err, req, res, next) => { 
     console.error(err.stack);
     res.status(500).json({ message: 'Internal Server Error' });
+});
+
+// 7. Catch-all route last
+app.get('*', (req, res) => {
+    res.redirect('/');
 });
 
 // Made by A^2
